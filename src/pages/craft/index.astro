@@ -1,0 +1,38 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import CraftCard from '@/components/CraftCard.astro'
+import PageHead from '@/components/PageHead.astro'
+import PaginationComponent from '@/components/ui/pagination'
+import Layout from '@/layouts/Layout.astro'
+import { getAllCrafts, groupCraftByYear } from '@/lib/data-utils'
+
+const crafts = await getAllCrafts()
+const craftsByYear = groupCraftByYear(crafts)
+const years = Object.keys(craftsByYear).sort((a, b) => parseInt(b) - parseInt(a))
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Craft" />
+  <Breadcrumbs
+    items={[
+      { label: 'Craft', href: '/craft', icon: 'lucide:archive' },
+    ]}
+  />
+  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+    {
+      years.map((year) => (
+        <section class="flex flex-col gap-y-4">
+          <div class="font-medium">{year}</div>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {craftsByYear[year].map((craft) => (
+              <li>
+                <CraftCard entry={craft} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+</Layout>

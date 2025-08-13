@@ -12,7 +12,6 @@ import rehypeKatex from 'rehype-katex'
 import rehypePrettyCode from 'rehype-pretty-code'
 import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
-import remarkSectionize from 'remark-sectionize'
 import rehypeDocument from 'rehype-document'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
@@ -39,16 +38,18 @@ export default defineConfig({
         },
       },
       styleOverrides: {
-        borderColor: 'var(--border)',
+        codeFontSize: '0.75rem',
+        borderWidth: '0px',
+        borderColor: 'transparent',
         codeFontFamily: 'var(--font-mono)',
-        codeBackground:
-          'color-mix(in oklab, var(--secondary) 25%, transparent)',
+        borderRadius: 'var(--radius-lg)',
         frames: {
+          editorBackground: 'var(--secondary)',
           editorActiveTabForeground: 'var(--muted-foreground)',
-          editorActiveTabBackground:
-            'color-mix(in oklab, var(--secondary) 25%, transparent)',
+          editorActiveTabBackground: 'var(--muted)',
           editorActiveTabIndicatorBottomColor: 'transparent',
           editorActiveTabIndicatorTopColor: 'transparent',
+          editorTabBorderRadius: '0',
           editorTabBarBackground: 'transparent',
           editorTabBarBorderBottomColor: 'transparent',
           frameBoxShadowCssValue: 'none',
@@ -57,6 +58,11 @@ export default defineConfig({
           terminalTitlebarBackground: 'transparent',
           terminalTitlebarBorderBottomColor: 'transparent',
           terminalTitlebarForeground: 'var(--muted-foreground)',
+          editorTabsMarginInlineStart: '0',
+          inlineButtonBackground: 'transparent',
+          inlineButtonBackgroundHoverOrFocusOpacity: 'transparent',
+          inlineButtonBackgroundActiveOpacity: 'transparent',
+          inlineButtonBackgroundIdleOpacity: '1',
         },
         lineNumbers: {
           foreground: 'var(--muted-foreground)',
@@ -107,6 +113,6 @@ export default defineConfig({
         },
       ],
     ],
-    remarkPlugins: [remarkMath, remarkEmoji, remarkSectionize],
+    remarkPlugins: [remarkMath, remarkEmoji],
   },
 })

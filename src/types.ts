@@ -6,6 +6,7 @@ export type Site = {
   locale: string
   featuredPostCount: number
   postsPerPage: number
+  featuredCraftCount: number
 }
 
 export type SocialLink = {
@@ -15,4 +16,11 @@ export type SocialLink = {
 
 export type IconMap = {
   [key: string]: string
+}
+
+export type Tech = {
+  name: string
+  href?: string
+  icon: string
+  highlightColor?: string
 }

@@ -1,0 +1,154 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ProjectHead from '@/components/projects/ProjectHead.astro';
+import PostNavigation from '@/components/PostNavigation.astro';
+import { badgeVariants } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import Layout from '@/layouts/Layout.astro';
+import { getAllProjects, getAdjacentProjects, getProjectTOCSections } from '@/lib/data-utils';
+import { formatDate } from '@/lib/utils';
+import { Icon } from 'astro-icon/components';
+import Image from 'astro/components/Image.astro';
+import { render } from 'astro:content';
+import TOCHeader from '@/components/TOCHeader.astro';
+import ProjectTocSidebar from '@/components/projects/project-toc-sidebar.astro';
+import ProjectNavigation from '@/components/projects/ProjectNavigation.astro';
+
+export async function getStaticPaths(){
+  const project = await getAllProjects()
+  return project.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }))
+}
+
+const { project } = Astro.props;
+const currentProjectId = Astro.params.id;
+const { Content, headings } = await render(project);
+
+const navigation = await getAdjacentProjects(currentProjectId);
+const tocSections = await getProjectTOCSections(currentProjectId)
+---
+
+<Layout>
+  <ProjectHead slot="head" project={project} />
+  {
+    headings?.length > 0 && <TOCHeader slot="table-of-contents" headings={headings} />
+  }
+  <section
+    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
+  >
+    <div class="col-start-2">
+      <Breadcrumbs
+        items={[
+          { href: '/projects', label: 'Projects', icon: 'lucide:library-big' },
+          { href: `/projects/${project.id}`, label: project.data.name, icon: 'lucide:book-open' },
+        ]}
+      />
+    </div>
+    {
+      project.data.image && (
+        <Image
+          src={project.data.image}
+          alt={project.data.name}
+          width={1200}
+          height={630}
+          class="col-span-full mx-auto w-full max-w-5xl object-cover rounded-sm"
+        />
+      )
+    }
+
+    <section class="col-start-2 flex flex-col gap-y-6 text-center">
+      <div class="flex flex-col">
+        <h1
+          class="mb-2 scroll-mt-31 text-3xl leading-tight font-medium sm:text-4xl"
+          id="post-title"
+        >
+          {project.data.name}
+        </h1>
+
+        <div
+          class="text-muted-foreground divide-border mb-4 flex flex-col items-center justify-center divide-y text-xs sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm"
+        >
+          <div
+            class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0"
+          >
+            <span>{formatDate(project.data.startDate || new Date())} - {formatDate(project.data.endDate || new Date())}</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          {
+            project.data.tags &&
+              project.data.tags.length > 0 &&
+              project.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tag}`}
+                  class={badgeVariants({ variant: 'secondary' })}
+                >
+                  <Icon name="lucide:hash" class="size-3" />
+                  {tag}
+                </a>
+              ))
+          }
+        </div>
+      </div>
+
+      <ProjectNavigation
+        nextPost={navigation.newer}
+        prevPost={navigation.older}
+      />
+    </section>
+
+    {
+      tocSections.length > 0 && (
+        <ProjectTocSidebar headings={tocSections} />
+      )
+    }
+
+    <article class="prose col-start-2 max-w-none">
+      <Content />
+    </article>
+
+    <ProjectNavigation
+      nextPost={navigation.newer}
+      prevPost={navigation.older}
+    />
+  </section>
+
+  <Button
+    variant="outline"
+    size="icon"
+    className="group fixed right-8 bottom-8 z-50 hidden"
+    id="scroll-to-top"
+    title="Scroll to top"
+    aria-label="Scroll to top"
+  >
+    <Icon
+      name="lucide:arrow-up"
+      class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
+    />
+  </Button>
+
+  <script>
+    document.addEventListener('astro:page-load', () => {
+      const scrollToTopButton = document.getElementById('scroll-to-top')
+      const footer = document.querySelector('footer')
+
+      if (scrollToTopButton && footer) {
+        scrollToTopButton.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+
+        window.addEventListener('scroll', () => {
+          const footerRect = footer.getBoundingClientRect()
+          const isFooterVisible = footerRect.top <= window.innerHeight
+
+          scrollToTopButton.classList.toggle(
+            'hidden',
+            window.scrollY <= 300 || isFooterVisible,
+          )
+        })
+      }
+    })
+  </script>
+</Layout>

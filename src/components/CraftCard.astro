@@ -1,0 +1,44 @@
+---
+import { formatDate } from '@/lib/utils'
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import Link from './Link.astro'
+
+interface Props {
+  entry: CollectionEntry<'craft'>
+}
+
+const { entry } = Astro.props
+const formattedDate = formatDate(entry.data.date);
+---
+
+<div
+  class="hover:bg-secondary/50 rounded-xl border p-1 transition-colors duration-300 ease-in-out"
+>
+  <Link
+    href={`/${entry.collection}/${entry.id}`}
+    class="flex flex-col gap-4"
+  >
+    {
+      entry.data.image && (
+        <div class="sm:shrink-0">
+          <Image
+            src={entry.data.image}
+            alt={entry.data.title}
+            width={1200}
+            height={630}
+            class="object-cover rounded-md"
+          />
+        </div>
+      )
+    }
+
+    <div class="grow px-2">
+      <h3 class="mb-1 text-lg font-medium">{entry.data.title}</h3>
+      <div
+        class="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-2 text-sm"
+      >
+        <span>{formattedDate}</span>
+    </div>
+  </Link>
+</div>

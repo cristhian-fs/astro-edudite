@@ -8,9 +8,21 @@ const blog = defineCollection({
       title: z.string(),
       description: z.string(),
       date: z.coerce.date(),
+      order: z.number().optional(),
       image: image().optional(),
       tags: z.array(z.string()).optional(),
       authors: z.array(z.string()).optional(),
+      draft: z.boolean().optional(),
+    }),
+})
+
+const craft = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/craft' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.coerce.date(),
+      image: image().optional(),
       draft: z.boolean().optional(),
     }),
 })
@@ -39,10 +51,11 @@ const projects = defineCollection({
       description: z.string(),
       tags: z.array(z.string()),
       image: image(),
-      link: z.string().url(),
-      startDate: z.coerce.date().optional(),
+      link: z.string(),
+      startDate: z.coerce.date(),
       endDate: z.coerce.date().optional(),
+      isCompleted: z.boolean().optional().default(false),
     }),
 })
 
-export const collections = { blog, authors, projects }
+export const collections = { blog, authors, projects, craft }

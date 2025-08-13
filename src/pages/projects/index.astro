@@ -1,0 +1,38 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import ProjectCard from '@/components/projects/ProjectCard.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllProjects } from '@/lib/data-utils'
+
+const projects = await getAllProjects()
+const completedProjects = projects.filter((project) => project.data.isCompleted)
+const uncompletedProjects = projects.filter((project) => !project.data.isCompleted)
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="About" />
+  <Breadcrumbs items={[{ label: 'Projects', icon: 'lucide:info' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <p class="mb-4 text-pretty">
+          Here are some of the projects I've worked on. (-_-)
+        </p>
+      </div>
+      {uncompletedProjects.length > 0 && (
+        <h2 class="mb-4 text-2xl font-medium">In progress</h2>
+        <div class="flex flex-col gap-4 mb-8">
+          {uncompletedProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      )}
+      {completedProjects.length > 0 && (
+        <h2 class="mb-4 text-2xl font-medium">Completed</h2>
+        <div class="flex flex-col gap-4">
+          {completedProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

@@ -1,68 +1,155 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
+import CraftCard from '@/components/CraftCard.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
+import ProjectCard from '@/components/projects/ProjectCard.astro'
+import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
-import { SITE } from '@/consts'
+import { SITE, TECHSTACK } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentPosts } from '@/lib/data-utils'
+import { getRecentCrafts, getRecentPosts, getRecentProjects } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
 
+const projects = await getRecentProjects(SITE.featuredPostCount)
+const crafts = await getRecentCrafts(SITE.featuredCraftCount)
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
-<Layout>
+<Layout class="max-w-3xl">
   <PageHead slot="head" title="Home" />
   <section>
-    <div class="rounded-lg border">
-      <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-3xl leading-none font-medium">er·u·dite</h3>
+    <div
+      class="flex flex-col-reverse gap-2 rounded-lg border sm:flex-row sm:gap-4"
+    >
+      <div class="flex flex-col space-y-2 p-6">
+        <h3 class="text-3xl leading-none font-medium">Hi, I'm Cristhian</h3>
         <p class="text-muted-foreground text-sm">
-          /ˈer(y)əˌdīt/ &bull; <span class="font-medium">adjective</span>
+          23 year old front-end developer from Brasil.🇧🇷
         </p>
+        <p class="text-muted-foreground text-sm">
+          I'm currently focused on building solid, accessible, and maintainable
+          interfaces. I have the most experience with React, TypeScript, and the
+          modern web stack, but I'm always up for learning whatever's needed to
+          solve things properly.
+        </p>
+        <div class="mt-3 flex items-center gap-x-2.5">
+          <Link
+            href="https://github.com/cristhian-fs"
+            class={buttonVariants({ variant: 'outline' })}
+            external
+            download
+          >
+            Resume
+            <Icon name="lucide:file-text" class="size-4" />
+          </Link>
+          <Link
+            href="https://github.com/cristhian-fs"
+            class={buttonVariants({ variant: 'ghost' })}
+            external
+          >
+            <span class="sr-only">Github</span>
+            <Icon name="lucide:github" class="size-4" />
+          </Link>
+          <Link
+            href="mailto:contato@cristhianf.dev"
+            class={buttonVariants({ variant: 'ghost' })}
+            external
+          >
+            <span class="sr-only">Mail</span>
+            <Icon name="lucide:mail" class="size-4" />
+          </Link>
+          <Link
+            href="linkeding.com/in/cristhian-fs"
+            class={buttonVariants({ variant: 'ghost' })}
+            external
+          >
+            <span class="sr-only">Linkedin</span>
+            <Icon name="lucide:linkedin" class="size-4" />
+          </Link>
+        </div>
       </div>
-      <div class="p-6 pt-0">
-        <p class="text-muted-foreground mb-2 text-sm">
-          astro-erudite is an opinionated, unstyled static blogging template
-          built with <Link
-            href="https://astro.build"
-            class="text-foreground"
-            external
-            underline>Astro</Link
-          >, <Link
-            href="https://tailwindcss.com"
-            class="text-foreground"
-            external
-            underline>Tailwind</Link
-          >, and <Link
-            href="https://ui.shadcn.com"
-            class="text-foreground"
-            external
-            underline>shadcn/ui</Link
-          >. Extraordinarily loosely based on the <Link
-            href="https://astro-micro.vercel.app/"
-            class="text-foreground"
-            external
-            underline>Astro Micro</Link
-          > theme.
-        </p>
-        <p class="text-muted-foreground text-sm">
-          To use this template, check out the <Link
-            href="https://github.com/jktrn/astro-erudite"
-            class="text-foreground"
-            underline
-            external>GitHub</Link
-          > repository. To learn more about why this template exists, read this blog
-          post: <Link
-            href="/blog/the-state-of-static-blogs"
-            class="text-foreground"
-            underline>The State of Static Blogs in 2024</Link
-          >.
-        </p>
+      <div class="max-h-24 w-fit max-w-24 p-1">
+        <div class="size-full overflow-hidden rounded-md border shadow-sm">
+          <img
+            src="/mcdonalds.png"
+            alt="Avatar of Cristhian"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="mt-6 flex flex-col gap-y-2.5">
+      <h3 class="text-xl font-medium">Techs that I use</h3>
+      <div class="flex flex-wrap items-center justify-start gap-2">
+        {
+          TECHSTACK.map((tech) =>
+            tech.href ? (
+              <Link href={tech.href} external>
+                <Badge variant="outline">
+                  <Icon name={tech.icon} class="size-4" />
+                  {tech.name}
+                </Badge>
+              </Link>
+            ) : (
+              <Badge variant="outline">
+                <Icon name={tech.icon} class="size-4" />
+                {tech.name}
+              </Badge>
+            ),
+          )
+        }
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest posts</h2>
+  <section class="mt-8 flex flex-col gap-y-4">
+    <h2 class="text-xl font-medium">Projects</h2>
+    <ul class="flex flex-col gap-4">
+      {
+        projects.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/projects"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all projects
+        <span class="ml-1.5 transition-transform group-hover:translate-x-1">
+          &rarr;
+        </span>
+      </Link>
+    </div>
+  </section>
+  <section class="mt-8 flex flex-col gap-y-4">
+    <h2 class="text-xl font-medium">Craft</h2>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {
+        crafts.map((craft) => (
+          <li>
+            <CraftCard entry={craft} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/crafts"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all
+        <span class="ml-1.5 transition-transform group-hover:translate-x-1">
+          &rarr;
+        </span>
+      </Link>
+    </div>
+  </section>
+  <section class="mt-8 flex flex-col gap-y-4">
+    <h2 class="text-xl font-medium">Latest posts</h2>
     <ul class="flex flex-col gap-y-4">
       {
         blog.map((post) => (
