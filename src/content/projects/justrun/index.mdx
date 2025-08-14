@@ -1,0 +1,59 @@
+---
+name: 'JustRun'
+description: 'Fullstack app to runners create their whole workout periodization.'
+tags: ['react', 'hono', 'drizzle', 'react-query']
+image: './assets/cover.png'
+link: '/projects/justrun'
+startDate: '2025-06-05'
+isCompleted: false
+---
+
+# Project Overview
+
+JustRun is a online platform built exclusively for runners who wants to improve their results along their workouts. The idea is quite simple, the user will fill out the informations about himself, things like his age, gender, weight, height, and the result of some running test that he made, and the app will automatically calculate his stats, and generates a full workout periodization based on his needs.
+
+---
+
+## Motivations
+
+I love to running. It's a very exciting sport to have as a hobby, and the progress just wants us, runners, to keep it up, training hard to improve our racing times, but is so hard to structure a good periodization for our workouts, specially if we don't have a coach, or something like that, that's where the main idea behind this project comes from. And it's a good opportunity to learn more and more about programming, which is the thing I like so much.
+
+<div class="flex justify-center">
+  <div class="max-w-xs saturate-0">
+    ![Me in my first run](assets/first-run.jpeg)
+    *Thats me after my first run o.O*
+  </div>
+</div>
+
+---
+
+## Objectives
+
+My main goal building JustRun is to provite runners with an accessible and well made app that can be used on desktop/mobile, and generate good workouts based on scientific studies, and that meet their needs, even if it's start running, or running a marathon, the app will cover all the scenarios.
+
+---
+
+## Techs
+
+I was looking for some tutorial that provides a deep learning about [Hono](https://hono.dev), which is a framework that I saw once on a video from [Code With Antonio](https://youtube.com/CodeWithAntonio), and I really like the _TRPC like_ api routes, so I find a [HackerNews Clone Tutorial](https://www.youtube.com/watch?v=eHbO5OWBBpg) from Better Stack, did it all from the scratcy to deploy, and I liked the project structure, which was a monorepo using these technologies:
+
+### Backend 
+  - Hono
+  - Drizzle
+  - Bun
+  - Postgresql
+  - Lucia (auth)
+
+### Frontend
+  - Tanstack Router
+  - React Query
+  - TanStack Form
+
+I kinda like this idea, so I came out with all of these to my project, with a few changes:
+
+  - TanStack Form -> React hook form + zod (personally I think its better till nowdays)
+  - Lucia -> Better auth
+
+## Development Diary
+
+Please check [Devlog](/blog/justrun-devlog) for detailed development progress! 
