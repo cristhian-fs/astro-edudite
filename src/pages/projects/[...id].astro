@@ -1,5 +1,12 @@
 ---
-import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 import ProjectHead from '@/components/projects/ProjectHead.astro';
 import PostNavigation from '@/components/PostNavigation.astro';
 import { badgeVariants } from '@/components/ui/badge';
@@ -30,21 +37,34 @@ const navigation = await getAdjacentProjects(currentProjectId);
 const tocSections = await getProjectTOCSections(currentProjectId)
 ---
 
-<Layout>
+<Layout class="pt-6">
   <ProjectHead slot="head" project={project} />
   {
     headings?.length > 0 && <TOCHeader slot="table-of-contents" headings={headings} />
   }
   <section
-    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
+    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)]"
   >
     <div class="col-start-2">
-      <Breadcrumbs
-        items={[
-          { href: '/projects', label: 'Projects', icon: 'lucide:library-big' },
-          { href: `/projects/${project.id}`, label: project.data.name, icon: 'lucide:book-open' },
-        ]}
-      />
+      <Breadcrumb>
+        <BreadcrumbList className='justify-center'>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/projects">
+              Projects
+            </BreadcrumbLink>
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbLink href={`/projects/${project.data.link}`}>
+              {project.data.name}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <h1
+        class="mb-2 scroll-mt-31 text-3xl leading-tight font-medium sm:text-4xl xl:text-5xl text-center mt-2"
+        id="post-title"
+      >
+        {project.data.name}
+      </h1>
     </div>
     {
       project.data.image && (
@@ -53,27 +73,20 @@ const tocSections = await getProjectTOCSections(currentProjectId)
           alt={project.data.name}
           width={1200}
           height={630}
-          class="col-span-full mx-auto w-full max-w-5xl object-cover rounded-sm"
+          class="col-start-2 mx-auto w-full max-w-5xl object-cover rounded-md my-12 border shadow-lg"
         />
       )
     }
 
-    <section class="col-start-2 flex flex-col gap-y-6 text-center">
+    <section class="col-start-2 flex flex-col gap-y-6 text-center mb-54">
       <div class="flex flex-col">
-        <h1
-          class="mb-2 scroll-mt-31 text-3xl leading-tight font-medium sm:text-4xl"
-          id="post-title"
-        >
-          {project.data.name}
-        </h1>
-
         <div
           class="text-muted-foreground divide-border mb-4 flex flex-col items-center justify-center divide-y text-xs sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm"
         >
           <div
             class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0"
           >
-            <span>{formatDate(project.data.startDate || new Date())} - {formatDate(project.data.endDate || new Date())}</span>
+            <span>{formatDate(project.data.startDate || new Date())} - {project.data.endDate ? formatDate(project.data.endDate) : 'Present'}</span>
           </div>
         </div>
         <div class="flex flex-wrap justify-center gap-2">
@@ -92,11 +105,6 @@ const tocSections = await getProjectTOCSections(currentProjectId)
           }
         </div>
       </div>
-
-      <ProjectNavigation
-        nextPost={navigation.newer}
-        prevPost={navigation.older}
-      />
     </section>
 
     {
@@ -105,7 +113,7 @@ const tocSections = await getProjectTOCSections(currentProjectId)
       )
     }
 
-    <article class="prose col-start-2 max-w-none">
+    <article class="prose col-start-2 max-w-none mb-10">
       <Content />
     </article>
 

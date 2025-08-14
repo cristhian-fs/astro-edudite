@@ -22,13 +22,13 @@ const uncompletedProjects = projects.filter((project) => !project.data.isComplet
         </p>
       </div>
       {uncompletedProjects.length > 0 && (
-        <h2 class="mb-4 text-2xl font-medium">In progress</h2>
+        <h2 class="mb-4 text-xl font-medium">In progress</h2>
         <div class="flex flex-col gap-4 mb-8">
           {uncompletedProjects.map((project) => <ProjectCard project={project} />)}
         </div>
       )}
       {completedProjects.length > 0 && (
-        <h2 class="mb-4 text-2xl font-medium">Completed</h2>
+        <h2 class="mb-4 text-xl font-medium">Completed</h2>
         <div class="flex flex-col gap-4">
           {completedProjects.map((project) => <ProjectCard project={project} />)}
         </div>
