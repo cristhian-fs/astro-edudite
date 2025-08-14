@@ -1,0 +1,43 @@
+---
+import { getPostReadingTime, getSubpostsForParent } from '@/lib/data-utils';
+import { ScrollArea } from './ui/scroll-area';
+import { Icon } from 'astro-icon/components';
+import { formatDate } from '@/lib/utils';
+
+interface Props {
+  parentId: string
+}
+
+const { parentId } = Astro.props;
+const subposts = await getSubpostsForParent(parentId);
+---
+
+<div class="rounded-md p-4 flex flex-col gap-2 border">
+  <span class="text-lg">Development Chapters</span>
+  <ScrollArea
+    client:load
+    className="flex max-h-64 flex-col overflow-y-auto p-0"
+  >
+    <ul class="flex flex-col gap-y-2 list-none !my-0 !mt-2 !ml-4">
+      {
+        subposts.map((subpost) => (
+          <li class="text-sm p-0 m-0">
+            <a href={`/blog/${subpost.id}`} class="no-underline group">
+              <div class="flex flex-col border rounded-sm p-2">
+                <span class="text-lg group-hover:underline">
+                  {subpost.data.title}
+                </span>
+                <span>
+                  {formatDate(subpost.data.date)}
+                </span>
+                <div class="flex items-center gap-x-1">
+                  <Icon name="lucide:clock" class="size-3" />
+                  <span>{getPostReadingTime(subpost.id)} min read</span>
+                </div>
+              </div>
+            </a>
+          </li>
+      ))}
+    </ul>
+  </ScrollArea>
+</div>
