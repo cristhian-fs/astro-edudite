@@ -8,9 +8,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { NAV_LINKS } from '@/consts'
 import { Menu } from 'lucide-react'
+import { useTranslations } from '@/i18n'
+import type { Lang } from '@/i18n/types'
 
-const MobileMenu = () => {
+const MobileMenu = ({locale}: { locale: Lang }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const t = useTranslations(locale);
 
   useEffect(() => {
     const handleViewTransitionStart = () => {
@@ -53,7 +56,7 @@ const MobileMenu = () => {
               className="w-full text-lg font-medium capitalize"
               onClick={() => setIsOpen(false)}
             >
-              {item.label}
+              {typeof item.label === 'string' ?  item.label : t(item.label)}
             </a>
           </DropdownMenuItem>
         ))}

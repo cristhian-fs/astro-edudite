@@ -1,5 +1,4 @@
 import type { IconMap, SocialLink, Site, Tech } from '@/types'
-import { set } from 'astro:schema'
 
 export const SITE: Site = {
   title: 'Cristhian F.',

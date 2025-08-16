@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from "./locales";
+import { DEFAULT_LOCALE_SETTING } from "./locales";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { LOCALES, type Lang, type Multilingual } from "./types";
 

@@ -1,0 +1,59 @@
+---
+name: 'JustRun'
+description: 'Aplicativo completa para corredores criarem toda a periodização do seu treino.'
+tags: ['react', 'hono', 'drizzle', 'react-query']
+image: '../../../../../public/static/projects/justrun/cover.png'
+link: 'justrun'
+startDate: '2025-06-05'
+isCompleted: false
+---
+
+# Visão geral do projeto
+
+JustRun é uma plataforma online criada exclusivamente para corredores que desejam melhorar seus resultados ao longo dos treinos. A ideia é bastante simples: o usuário preenche informações sobre si mesmo, como idade, sexo, peso, altura e o resultado de algum teste de corrida que tenha feito, e o aplicativo calcula automaticamente suas estatísticas e gera uma periodização completa do treino com base em suas necessidades.
+
+---
+
+## Motivações
+
+Eu adoro correr. É um esporte muito emocionante para se ter como hobby, e o progresso nos motiva, corredores, a continuar, treinando duro para melhorar nossos tempos de corrida, mas é muito difícil estruturar uma boa periodização para nossos treinos, especialmente se não temos um treinador ou algo parecido. É daí que vem a ideia principal por trás deste projeto. E é uma boa oportunidade para aprender cada vez mais sobre programação, que é o que eu gosto tanto de fazer.
+
+<div class="flex justify-center">
+  <div class="max-w-xs saturate-0">
+    ![Eu na minha primeira corrida](../../../../../public/static/projects/justrun/first-run.jpeg)
+    *Este sou eu após a minha primeira corrida o.O*
+  </div>
+</div>
+
+---
+
+## Objetivos
+
+Meu principal objetivo ao criar o JustRun é oferecer aos corredores um aplicativo acessível e bem feito que possa ser usado em computadores e dispositivos móveis, e que gere bons treinos com base em estudos científicos e que atendam às suas necessidades, seja para começar a correr ou para correr uma maratona, o aplicativo cobrirá todos os cenários.
+
+---
+
+## Tecnologias
+
+Eu estava procurando algum tutorial que oferecesse um aprendizado aprofundado sobre [Hono](https://hono.dev), que é uma estrutura que vi uma vez em um vídeo do [Code With Antonio](https://youtube.com/CodeWithAntonio), e gostei muito das rotas de API _TRPC like_, então encontrei um [Tutorial Clone do HackerNews](https://www.youtube.com/watch?v=eHbO5OWBBpg) da Better Stack, fiz tudo desde o início até a implantação e gostei da estrutura do projeto, que era um monorepo usando estas tecnologias:
+
+### Backend 
+  - Hono
+  - Drizzle
+  - Bun
+  - Postgresql
+  - Lucia (auth)
+
+### Frontend
+  - Tanstack Router
+  - React Query
+  - TanStack Form
+
+Gostei bastante da ideia, então incorporei tudo isso ao meu projeto, com algumas alterações:
+
+- TanStack Form -> React hook form + zod (pessoalmente, acho que é melhor até hoje)
+- Lucia -> Better auth
+
+## Diário de desenvolvimento
+
+Confira o [Devlog](/blog/justrun-devlog) para obter detalhes sobre o andamento do desenvolvimento!

@@ -5,7 +5,7 @@ import MobileMenu from '@/components/ui/mobile-menu'
 import { NAV_LINKS, SITE } from '@/consts'
 import { useTranslations } from '@/i18n'
 import type { Lang } from '@/i18n/types'
-import { getRelativeLocaleUrl, getRelativeLocaleUrlList } from 'astro:i18n'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
 const locale = Astro.currentLocale as Lang;
 const t = useTranslations(locale);
@@ -34,7 +34,7 @@ const t = useTranslations(locale);
           ))
         }
       </nav>
-      <MobileMenu client:load transition:persist />
+      <MobileMenu client:load transition:persist locale={locale} />
       <ThemeToggle transition:persist />
     </div>
   </div>

@@ -6,11 +6,10 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import type { Lang } from '@/i18n/types';
 import Layout from '@/layouts/Layout.astro';
-import { getAllCrafts, getAdjacentCrafts, getCraftReadingTime } from '@/lib/data-utils';
+import { getAllCrafts, getAdjacentCrafts } from '@/lib/data-utils';
 import { Icon } from 'astro-icon/components';
 import { render } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { undefined } from 'astro:schema';
 
 export async function getStaticPaths(){
   const crafts = await getAllCrafts()

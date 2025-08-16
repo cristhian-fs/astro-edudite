@@ -3,9 +3,8 @@ import { SITE } from '@/consts'
 import { ClientRouter } from 'astro:transitions'
 import Favicons from './Favicons.astro'
 import { DEFAULT_LOCALE  } from '@/i18n';
-import { LOCALES, type Lang } from '@/i18n/types';
+import { LOCALES } from '@/i18n/types';
 
-const locale = Astro.currentLocale as Lang;
 const langs = Object.keys(LOCALES);
 const baseUrl = import.meta.env.PROD ? Astro.site : "/";
 const defaultLocale = DEFAULT_LOCALE;

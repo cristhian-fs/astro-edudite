@@ -28,16 +28,16 @@ const activePost = parentPost || currentPost
 const isActivePost = activePost?.id === currentPostId
 
 const activePostReadingTime = activePost
-  ? await getPostReadingTime(activePost.id)
+  ? await getPostReadingTime(activePost.id,locale)
   : null
 const activePostCombinedReadingTime =
   activePost && subposts.length > 0
-    ? await getCombinedReadingTime(activePost.id)
+    ? await getCombinedReadingTime(activePost.id,locale)
     : null
 const subpostsWithReadingTime = await Promise.all(
   subposts.map(async (subpost) => ({
     ...subpost,
-    readingTime: await getPostReadingTime(subpost.id),
+    readingTime: await getPostReadingTime(subpost.id,locale),
   })),
 )
 

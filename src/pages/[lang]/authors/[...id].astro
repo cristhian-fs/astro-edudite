@@ -3,17 +3,24 @@ import AuthorCard from '@/components/AuthorCard.astro'
 import BlogCard from '@/components/BlogCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
-import type { Lang } from '@/i18n/types'
+import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllAuthors, getPostsByAuthor } from '@/lib/data-utils'
 
 export async function getStaticPaths() {
-  const locale = Astro.currentLocale as Lang;
   const authors = await getAllAuthors()
-  return authors.map((author) => ({
-    params: { lang: locale, id: author.id },
-    props: { author },
-  }))
+  const langs = Object.keys(LOCALES) as Lang[];
+
+  return Promise.all(
+    langs.flatMap(lang =>
+      authors.map(async (author) => {
+        return {
+          params: { lang, id: author.id },
+          props: { author },
+        }
+      })
+    )
+  )
 }
 
 const { author } = Astro.props

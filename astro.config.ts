@@ -18,7 +18,7 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 
 import tailwindcss from '@tailwindcss/vite'
-import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from '@/i18n/locales'
+import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from './src/i18n/locales'
 
 export default defineConfig({
   site: 'https://astro-erudite.vercel.app',

@@ -1,19 +1,13 @@
 ---
 import { SITE } from '@/consts'
 import {
-  useTranslations,
-  getLocalePaths,
   DEFAULT_LOCALE,
 } from "@/i18n";
-
-import { type Lang } from '@/i18n/types'
 
 interface Props {
   title?: string
   description?: string
 }
-
-const locale = Astro.currentLocale as Lang;
 
 const { title = SITE.title, description = SITE.description } = Astro.props
 const image = new URL('/static/1200x630.png', Astro.site)

@@ -5,7 +5,6 @@ import PageHead from '@/components/PageHead.astro'
 import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, groupPostsByYear } from '@/lib/data-utils'
-import { getCollection } from 'astro:content'
 
 export const getStaticPaths = () =>
   Object.keys(LOCALES).map((lang) => ({
