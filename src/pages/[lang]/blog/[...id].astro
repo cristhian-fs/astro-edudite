@@ -9,6 +9,7 @@ import TOCHeader from '@/components/TOCHeader.astro'
 import TOCSidebar from '@/components/TOCSidebar.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type { Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import {
   getAdjacentPosts,
@@ -27,35 +28,41 @@ import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { render } from 'astro:content'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+
+const locale = Astro.currentLocale as Lang
 
 export async function getStaticPaths() {
-  const posts = await getAllPostsAndSubposts()
-  return posts.map((post) => ({
-    params: { id: post.id },
-    props: post,
-  }))
+  const posts = await getAllPostsAndSubposts();
+  
+  return posts.map((post) => {
+    const [lang, ...id] = post.id.split('/');
+    return {
+      params: { lang, id: id.join('/') || undefined },
+      props: post,
+    }
+  })
 }
 
 const post = Astro.props
-const currentPostId = Astro.params.id
 const { Content, headings } = await render(post)
 const authors = await parseAuthors(post.data.authors ?? [])
 
-const isCurrentSubpost = isSubpost(currentPostId)
-const navigation = await getAdjacentPosts(currentPostId)
-const parentPost = isCurrentSubpost ? await getParentPost(currentPostId) : null
+const isCurrentSubpost = isSubpost(post.id)
+const navigation = await getAdjacentPosts(post.id, locale)
+const parentPost = isCurrentSubpost ? await getParentPost(post.id) : null
 
-const hasChildPosts = await hasSubposts(currentPostId)
+const hasChildPosts = await hasSubposts(post.id);
 const subpostCount = !isCurrentSubpost
-  ? await getSubpostCount(currentPostId)
+  ? await getSubpostCount(post.id)
   : 0
-const postReadingTime = await getPostReadingTime(currentPostId)
+const postReadingTime = await getPostReadingTime(post.id, locale)
 const combinedReadingTime =
   hasChildPosts && !isCurrentSubpost
-    ? await getCombinedReadingTime(currentPostId)
+    ? await getCombinedReadingTime(post.id, locale)
     : null
 
-const tocSections = await getTOCSections(currentPostId)
+const tocSections = await getTOCSections(post.id)
 ---
 
 <Layout>
@@ -64,7 +71,7 @@ const tocSections = await getTOCSections(currentPostId)
     (hasChildPosts || isCurrentSubpost) && (
       <SubpostsHeader
         slot="subposts-navigation"
-        parentId={isCurrentSubpost ? getParentId(currentPostId) : currentPostId}
+        parentId={isCurrentSubpost ? getParentId(post.id) : post.id}
       />
     )
   }
@@ -83,7 +90,7 @@ const tocSections = await getTOCSections(currentPostId)
     <div class="col-start-2">
       <Breadcrumbs
         items={[
-          { href: '/blog', label: 'Blog', icon: 'lucide:library-big' },
+          { href: getRelativeLocaleUrl(locale, '/blog'), label: 'Blog', icon: 'lucide:library-big' },
           ...(isCurrentSubpost && parentPost
             ? [
                 {
@@ -92,14 +99,14 @@ const tocSections = await getTOCSections(currentPostId)
                   icon: 'lucide:book-open',
                 },
                 {
-                  href: `/blog/${currentPostId}`,
+                  href: `/blog/${post.id}`,
                   label: post.data.title,
                   icon: 'lucide:file-text',
                 },
               ]
             : [
                 {
-                  href: `/blog/${currentPostId}`,
+                  href: `/blog/${post.id}`,
                   label: post.data.title,
                   icon: 'lucide:book-open-text',
                 },
@@ -146,7 +153,7 @@ const tocSections = await getTOCSections(currentPostId)
                     />
                     {author.isRegistered ? (
                       <Link
-                        href={`/authors/${author.id}`}
+                        href={getRelativeLocaleUrl(locale, `/authors/${author.id}`)}
                         underline
                         class="text-foreground"
                       >
@@ -219,7 +226,7 @@ const tocSections = await getTOCSections(currentPostId)
 
     {
       tocSections.length > 0 && (
-        <TOCSidebar sections={tocSections} currentPostId={currentPostId} />
+        <TOCSidebar sections={tocSections} currentPostId={post.id} />
       )
     }
 
@@ -231,7 +238,7 @@ const tocSections = await getTOCSections(currentPostId)
       (hasChildPosts || isCurrentSubpost) && (
         <SubpostsSidebar
           parentId={
-            isCurrentSubpost ? getParentId(currentPostId) : currentPostId
+            isCurrentSubpost ? getParentId(post.id) : post.id
           }
           className="w-64"
         />

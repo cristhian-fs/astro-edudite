@@ -2,6 +2,8 @@
 import Link from '@/components/Link.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { ICON_MAP } from '@/consts'
+import { useTranslations } from '@/i18n'
+import type { Lang } from '@/i18n/types'
 import type { SocialLink } from '@/types'
 import { Icon } from 'astro-icon/components'
 
@@ -10,6 +12,8 @@ interface Props {
 }
 
 const { links } = Astro.props
+const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
 ---
 
 <ul class="flex flex-wrap gap-2" role="list">
@@ -19,7 +23,7 @@ const { links } = Astro.props
         <Link
           href={href}
           aria-label={label}
-          title={label}
+          title={typeof label === 'string' ? label : t(label)}
           class={buttonVariants({ variant: 'outline', size: 'icon' })}
           external
         >

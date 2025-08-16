@@ -2,12 +2,23 @@
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import ProjectCard from '@/components/projects/ProjectCard.astro'
+import { useTranslations } from '@/i18n'
+import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllProjects } from '@/lib/data-utils'
 
+export const getStaticPaths = () =>
+  Object.keys(LOCALES).map((lang) => ({
+    params: { lang },
+  }));
+
+const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
 const projects = await getAllProjects()
-const completedProjects = projects.filter((project) => project.data.isCompleted)
-const uncompletedProjects = projects.filter((project) => !project.data.isCompleted)
+const localizedProjects = projects.filter((project) => project.id.includes(locale))
+const completedProjects = localizedProjects.filter((project) => project.data.isCompleted)
+const uncompletedProjects = localizedProjects.filter((project) => !project.data.isCompleted)
+
 ---
 
 <Layout class="max-w-3xl">
@@ -18,7 +29,10 @@ const uncompletedProjects = projects.filter((project) => !project.data.isComplet
     <div class="min-w-full">
       <div class="prose mb-8">
         <p class="mb-4 text-pretty">
-          Here are some of the projects I've worked on. (-_-)
+          {t({ 
+            en: "Here are some of the projects I've worked on. (-_-)", 
+            'pt-br': 'Aqui alguns dos projetos que trabalhei. (-_-)' 
+          })}
         </p>
       </div>
       {uncompletedProjects.length > 0 && (

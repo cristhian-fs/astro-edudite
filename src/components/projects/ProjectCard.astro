@@ -1,23 +1,28 @@
 ---
 import Link from '@/components/Link.astro'
 import { Badge } from '@/components/ui/badge'
-import { formatDate } from '@/lib/utils'
+import { useTranslations } from '@/i18n'
+import type { Lang } from '@/i18n/types'
+import { formatDateByLocale } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
 interface Props {
   project: CollectionEntry<'projects'>
 }
 
 const { project } = Astro.props
+const locale = Astro.currentLocale as Lang
+const t = useTranslations(locale);
 ---
 
 <div
   class="hover:bg-secondary/50 rounded-xl border p-2 transition-colors duration-300 ease-in-out"
 >
   <Link
-    href={project.data.link}
+    href={getRelativeLocaleUrl(locale, `/projects/${project.data.link}`) }
     class="flex flex-col sm:flex-row gap-4"
   >
     {
@@ -38,7 +43,10 @@ const { project } = Astro.props
         <h3 class="mb-1 text-lg font-medium">
           {project.data.name}
         </h3>
-        <Badge variant={project.data.isCompleted ? 'default' : 'secondary'}>{project.data.isCompleted ? 'Completed' : 'In progress'}</Badge>
+        <Badge variant={project.data.isCompleted ? 'default' : 'secondary'}>
+          {project.data.isCompleted ? 
+            t({en: 'Completed', 'pt-br': 'Concluído'}) : t({en: 'In progress', 'pt-br': 'Em andamento'})}
+        </Badge>
       </div>
       <p class="text-muted-foreground mb-2 text-sm">
         {project.data.description}
@@ -49,10 +57,14 @@ const { project } = Astro.props
             <span class="flex items-center gap-x-1.5">
               <Icon name="lucide:calendar" class="size-3" />
               <span>
-                {formatDate(project.data.startDate)}
+                {formatDateByLocale(project.data.startDate, locale)}
                 {project.data.endDate
-                  ? ` → ${formatDate(project.data.endDate)}`
-                  : ' → Present'}
+                  ? ` → ${formatDateByLocale(project.data.endDate, locale)}`
+                  : t({
+                      en: ' → Present',
+                      'pt-br': ' → Presente',
+                    })
+                }
               </span>
             </span>
           </p>

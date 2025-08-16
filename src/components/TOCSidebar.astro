@@ -1,8 +1,9 @@
 ---
 import { ScrollArea } from '@/components/ui/scroll-area'
+import type { Lang } from '@/i18n/types'
 import type { TOCSection } from '@/lib/data-utils'
 import { getParentId, isSubpost } from '@/lib/data-utils'
-import { cn, getHeadingMargin } from '@/lib/utils'
+import { cn, getHeadingMargin, removeLangPrefix } from '@/lib/utils'
 
 type Props = {
   sections: TOCSection[]
@@ -12,6 +13,9 @@ type Props = {
 const { sections, currentPostId } = Astro.props
 const isCurrentSubpost = isSubpost(currentPostId)
 const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
+const locale = Astro.currentLocale as Lang
+
+
 ---
 
 {
@@ -60,7 +64,7 @@ const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
                         <a
                           href={
                             isCurrentSubpost
-                              ? `/blog/${parentId}#${heading.slug}`
+                              ? `/${locale}/blog/${removeLangPrefix(parentId)}#${heading.slug}`
                               : `#${heading.slug}`
                           }
                           class="marker:text-foreground/30 list-none underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
@@ -91,7 +95,7 @@ const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
                           href={
                             section.subpostId === currentPostId
                               ? '#'
-                              : `/blog/${section.subpostId}`
+                              : `/${locale}/blog/${removeLangPrefix(section.subpostId as string)}`
                           }
                           class="marker:text-foreground/30 list-none underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
                           data-heading-link={
@@ -117,7 +121,7 @@ const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
                             href={
                               section.subpostId === currentPostId
                                 ? `#${heading.slug}`
-                                : `/blog/${section.subpostId}#${heading.slug}`
+                                : `/${locale}/blog/${removeLangPrefix(section.subpostId || '')}#${heading.slug}`
                             }
                             class="marker:text-foreground/30 hover:text-foreground/60 list-none underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
                             data-heading-link={

@@ -1,13 +1,24 @@
 ---
 import { SITE } from '@/consts'
+import {
+  useTranslations,
+  getLocalePaths,
+  DEFAULT_LOCALE,
+} from "@/i18n";
+
+import { type Lang } from '@/i18n/types'
 
 interface Props {
   title?: string
   description?: string
 }
 
+const locale = Astro.currentLocale as Lang;
+
 const { title = SITE.title, description = SITE.description } = Astro.props
 const image = new URL('/static/1200x630.png', Astro.site)
+
+const baseUrl = import.meta.env.PROD ? Astro.site : "/";
 ---
 
 <title>{`${title} | ${SITE.title}`}</title>
@@ -28,3 +39,10 @@ const image = new URL('/static/1200x630.png', Astro.site)
 <meta name="twitter:image" content={image} />
 <meta name="twitter:image:alt" content={title} />
 <meta name="twitter:card" content="summary_large_image" />
+
+<noscript>
+  <meta
+    http-equiv="refresh"
+    content={`0;url=${baseUrl + DEFAULT_LOCALE}/`}
+  />
+</noscript>

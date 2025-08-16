@@ -2,12 +2,19 @@
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import CraftCard from '@/components/CraftCard.astro'
 import PageHead from '@/components/PageHead.astro'
-import PaginationComponent from '@/components/ui/pagination'
+import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllCrafts, groupCraftByYear } from '@/lib/data-utils'
 
+export const getStaticPaths = () =>
+  Object.keys(LOCALES).map((lang) => ({
+    params: { lang },
+  }));
+
+const locale = Astro.currentLocale as Lang;
 const crafts = await getAllCrafts()
-const craftsByYear = groupCraftByYear(crafts)
+const filteredByLocaled = crafts.filter((craft) => craft.id.includes(locale))
+const craftsByYear = groupCraftByYear(filteredByLocaled)
 const years = Object.keys(craftsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 

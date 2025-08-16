@@ -18,6 +18,7 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 
 import tailwindcss from '@tailwindcss/vite'
+import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from '@/i18n/locales'
 
 export default defineConfig({
   site: 'https://astro-erudite.vercel.app',
@@ -72,11 +73,28 @@ export default defineConfig({
     }),
     mdx(),
     react(),
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: DEFAULT_LOCALE_SETTING,
+        locales: Object.fromEntries(
+          Object.entries(LOCALES_SETTING).map(
+            ([key, value]) => [key, value.lang ?? key]
+          )
+        ),
+      },
+    }),
     icon(),
   ],
   vite: {
     plugins: [tailwindcss()],
+  },
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'pt-br'],
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: false,
+    },
   },
   server: {
     port: 1234,

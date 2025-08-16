@@ -2,8 +2,14 @@
 import AuthorCard from '@/components/AuthorCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
+import { LOCALES } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllAuthors } from '@/lib/data-utils'
+
+export const getStaticPaths = () =>
+  Object.keys(LOCALES).map((lang) => ({
+    params: { lang },
+  }));
 
 const authors = await getAllAuthors()
 ---

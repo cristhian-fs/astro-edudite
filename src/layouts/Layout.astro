@@ -8,12 +8,15 @@ import Head from '@/components/Head.astro'
 import Header from '@/components/Header.astro'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
+import type { Lang } from '@/i18n/types'
 
 interface Props {
   class?: string
 }
 
 const { class: className } = Astro.props
+
+const locale = Astro.currentLocale as Lang;
 ---
 
 <!doctype html>

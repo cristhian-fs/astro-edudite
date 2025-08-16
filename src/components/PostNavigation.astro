@@ -1,11 +1,17 @@
 ---
 import Link from '@/components/Link.astro'
 import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { useTranslations } from '@/i18n'
+import type { Lang } from '@/i18n/types'
+import { cn, removeLangPrefix } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
 const { newerPost, olderPost, parentPost } = Astro.props
+const locale = Astro.currentLocale as Lang
 const isSubpost = !!parentPost
+
+const t = useTranslations(locale);
 ---
 
 <nav
@@ -15,7 +21,7 @@ const isSubpost = !!parentPost
   )}
 >
   <Link
-    href={olderPost ? `/blog/${olderPost.id}#post-title` : '#'}
+    href={olderPost ? getRelativeLocaleUrl(locale, `/blog/${removeLangPrefix(olderPost.id)}#post-title`) : '#'}
     class={cn(
       buttonVariants({ variant: 'outline' }),
       'rounded-lg group flex items-center justify-start size-full',
@@ -29,12 +35,29 @@ const isSubpost = !!parentPost
     />
     <div class="flex flex-col items-start overflow-hidden text-wrap">
       <span class="text-muted-foreground text-left text-xs">
-        {isSubpost ? 'Previous Subpost' : 'Previous Post'}
+        {isSubpost ? t({
+          en: 'Previous Subpost',
+          'pt-br': 'Subpost Anterior',
+        }) : 
+          t({
+            en: 'Previous Post',
+            'pt-br': 'Postagem Anterior',
+          })
+        }
       </span>
       <span class="w-full text-left text-sm text-balance text-ellipsis">
         {
           olderPost?.data.title ||
-            (isSubpost ? 'No older subpost' : "You're at the oldest post!")
+            (isSubpost ? 
+              t({
+                en: 'No older subpost',
+                'pt-br': 'Não há subpost mais antigo',
+              }) : 
+              t({
+                en: "You're at the oldest post!",
+                'pt-br': 'Você está na postagem mais antiga!',
+              })
+            )
         }
       </span>
     </div>
@@ -43,7 +66,7 @@ const isSubpost = !!parentPost
   {
     isSubpost && (
       <Link
-        href={parentPost ? `/blog/${parentPost.id}#post-title` : '#'}
+        href={parentPost ? getRelativeLocaleUrl(locale, `/blog/${removeLangPrefix(parentPost.id)}#post-title`) : '#'}
         class={cn(
           buttonVariants({ variant: 'outline' }),
           'group flex size-full items-center justify-center rounded-lg',
@@ -56,10 +79,16 @@ const isSubpost = !!parentPost
         />
         <div class="flex flex-col items-center overflow-hidden text-wrap">
           <span class="text-muted-foreground text-center text-xs">
-            Parent Post
+            {t({
+              en: 'Parent Post',
+              'pt-br': 'Post Original',
+            })}
           </span>
           <span class="w-full text-center text-sm text-balance text-ellipsis">
-            {parentPost?.data.title || 'No parent post'}
+            {parentPost?.data.title || t({
+              en: 'No parent post',
+              'pt-br': 'Sem post original',
+            })}
           </span>
         </div>
       </Link>
@@ -67,7 +96,7 @@ const isSubpost = !!parentPost
   }
 
   <Link
-    href={newerPost ? `/blog/${newerPost.id}#post-title` : '#'}
+    href={newerPost ? getRelativeLocaleUrl(locale, `/blog/${removeLangPrefix(newerPost.id)}#post-title`) : '#'}
     class={cn(
       buttonVariants({ variant: 'outline' }),
       'rounded-lg group flex items-center justify-end size-full',
@@ -77,12 +106,26 @@ const isSubpost = !!parentPost
   >
     <div class="flex flex-col items-end overflow-hidden text-wrap">
       <span class="text-muted-foreground text-right text-xs">
-        {isSubpost ? 'Next Subpost' : 'Next Post'}
+        {isSubpost ? t({ 
+            en: 'Next Subpost', 
+            'pt-br': 'Próximo Subpost' 
+          }) : 
+          t({ 
+            en: 'Next Post', 
+            'pt-br': 'Próxima Postagem' 
+            })
+          }
       </span>
       <span class="w-full text-right text-sm text-balance text-ellipsis">
         {
           newerPost?.data.title ||
-            (isSubpost ? 'No newer subpost' : "You're at the newest post!")
+            (isSubpost ? t({
+              en: 'No newer subpost',
+              'pt-br': 'Não há subpost mais novo',
+            }) : t({
+              en: "You're at the newest post!",
+              'pt-br': 'Você está na postagem mais nova!',
+            }))
         }
       </span>
     </div>

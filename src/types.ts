@@ -1,3 +1,5 @@
+import type { Multilingual } from "./i18n/types"
+
 export type Site = {
   title: string
   description: string
@@ -11,7 +13,7 @@ export type Site = {
 
 export type SocialLink = {
   href: string
-  label: string
+  label: Multilingual | string
 }
 
 export type IconMap = {

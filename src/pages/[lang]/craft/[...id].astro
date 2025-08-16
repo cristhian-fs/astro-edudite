@@ -4,32 +4,37 @@ import Link from '@/components/Link.astro';
 import PostNavigation from '@/components/PostNavigation.astro';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import type { Lang } from '@/i18n/types';
 import Layout from '@/layouts/Layout.astro';
 import { getAllCrafts, getAdjacentCrafts, getCraftReadingTime } from '@/lib/data-utils';
 import { Icon } from 'astro-icon/components';
 import { render } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { undefined } from 'astro:schema';
 
 export async function getStaticPaths(){
   const crafts = await getAllCrafts()
-  return crafts.map((craft) => ({
-    params: { id: craft.id },
-    props: { craft },
-  }))
+  return crafts.map((craft) => {
+    const [lang, ...id] = craft.id.split('/')
+    return {
+      params: { lang, id: id.join("/") || undefined },
+      props: { craft },
+    }
+  })
 }
 
 const { craft } = Astro.props;
-const currentCraftId = Astro.params.id;
-const { Content, headings } = await render(craft);
-const navigation = await getAdjacentCrafts(currentCraftId);
+const { Content } = await render(craft);
+const locale = Astro.currentLocale as Lang
+const navigation = await getAdjacentCrafts(craft.id, locale);
 
-const craftReadingTime = await getCraftReadingTime(currentCraftId);
 ---
 
 <Layout class='max-w-3xl'>
   <CraftHead slot="head" craft={craft} />
   <div class="flex w-full justify-between items-center">
     <Link
-      href="/craft"
+      href={getRelativeLocaleUrl(locale, "/craft")}
       class={buttonVariants({ variant: 'secondary', size: "icon" }) + ' group rounded-full'}
     >
       <span class="transition-transform">

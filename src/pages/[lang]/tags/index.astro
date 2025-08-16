@@ -3,11 +3,20 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import { badgeVariants } from '@/components/ui/badge'
+import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getSortedTags } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+
+export const getStaticPaths = () =>
+  Object.keys(LOCALES).map((lang) => ({
+    params: { lang },
+  }));
 
 const sortedTags = await getSortedTags()
+
+const locale = Astro.currentLocale as Lang
 ---
 
 <Layout class="max-w-3xl">
@@ -19,7 +28,7 @@ const sortedTags = await getSortedTags()
       {
         sortedTags.map(({ tag, count }) => (
           <Link
-            href={`/tags/${tag}`}
+            href={getRelativeLocaleUrl(locale, `/tags/${tag}`)}
             class={badgeVariants({ variant: 'secondary' })}
           >
             <Icon name="lucide:hash" class="size-3" />

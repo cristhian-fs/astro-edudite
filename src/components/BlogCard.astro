@@ -8,28 +8,31 @@ import {
   isSubpost,
   parseAuthors,
 } from '@/lib/data-utils'
-import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import Link from './Link.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import type { Lang } from '@/i18n/types'
+import { formatDateByLocale } from '@/lib/utils'
 
 interface Props {
   entry: CollectionEntry<'blog'>
 }
 
+const locale = Astro.currentLocale as Lang
 const { entry } = Astro.props
-const formattedDate = formatDate(entry.data.date)
-const readTime = await getCombinedReadingTime(entry.id)
+const readTime = await getCombinedReadingTime(entry.id, locale)
 const authors = await parseAuthors(entry.data.authors ?? [])
 const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
+
 ---
 
 <div
   class="hover:bg-secondary/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
   <Link
-    href={`/${entry.collection}/${entry.id}`}
+    href={getRelativeLocaleUrl(locale, `/blog/${entry.id.split('/')[1]}`)}
     class="flex flex-col gap-4 sm:flex-row"
   >
     {
@@ -72,7 +75,7 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
             </>
           )
         }
-        <span>{formattedDate}</span>
+        <span>{formatDateByLocale(entry.data.date, locale)}</span>
         <Separator orientation="vertical" className="h-4!" />
         <span>{readTime}</span>
         {

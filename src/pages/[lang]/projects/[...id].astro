@@ -20,21 +20,33 @@ import { render } from 'astro:content';
 import TOCHeader from '@/components/TOCHeader.astro';
 import ProjectTocSidebar from '@/components/projects/project-toc-sidebar.astro';
 import ProjectNavigation from '@/components/projects/ProjectNavigation.astro';
+import type { Lang } from '@/i18n/types';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '@/i18n';
+import { SITE_CONTENT } from '@/i18n/content';
+
 
 export async function getStaticPaths(){
-  const project = await getAllProjects()
-  return project.map((project) => ({
-    params: { id: project.id },
-    props: { project },
-  }))
+  const project = await getAllProjects();
+  return project.map((project) => {
+    const [lang, ...id] = project.id.split('/')
+    return {
+      params: { lang, id: id.join("/") || undefined },
+      props: { project },
+    }
+  })
 }
 
+const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
 const { project } = Astro.props;
-const currentProjectId = Astro.params.id;
+
 const { Content, headings } = await render(project);
 
-const navigation = await getAdjacentProjects(currentProjectId);
-const tocSections = await getProjectTOCSections(currentProjectId)
+const navigation = await getAdjacentProjects(project.id, locale);
+const tocSections = await getProjectTOCSections(project.id)
+
+
 ---
 
 <Layout class="pt-6">
@@ -49,11 +61,11 @@ const tocSections = await getProjectTOCSections(currentProjectId)
       <Breadcrumb>
         <BreadcrumbList className='justify-center'>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/projects">
-              Projects
+            <BreadcrumbLink href={getRelativeLocaleUrl(locale, '/projects')}>
+            {t(SITE_CONTENT.home.projects.title)}
             </BreadcrumbLink>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
-            <BreadcrumbLink href={`/projects/${project.data.link}`}>
+            <BreadcrumbLink href={getRelativeLocaleUrl(locale, `/projects/${project.data.link}`)}>
               {project.data.name}
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -95,7 +107,7 @@ const tocSections = await getProjectTOCSections(currentProjectId)
               project.data.tags.length > 0 &&
               project.data.tags.map((tag) => (
                 <a
-                  href={`/tags/${tag}`}
+                  href={getRelativeLocaleUrl(locale, `/tags/${tag}`)}
                   class={badgeVariants({ variant: 'secondary' })}
                 >
                   <Icon name="lucide:hash" class="size-3" />

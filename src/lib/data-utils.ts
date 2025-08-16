@@ -1,6 +1,7 @@
 import type { CollectionEntry } from 'astro:content'
 import { getCollection, render } from 'astro:content'
-import { calculateWordCountFromHtml, readingTime } from './utils'
+import { calculateWordCountFromHtml, readingTime, removeLangPrefix } from './utils'
+import type { Lang } from '@/i18n/types'
 
 // Cache para evitar múltiplas chamadas
 const cache = new Map<string, any>()
@@ -33,25 +34,25 @@ const sorters = {
 // Funções base otimizadas
 export const getAllAuthors = () => getCached('authors', () => getCollection('authors'))
 
-export const getAllPosts = () => getCached('posts', async () => {
+export const getAllPosts = async () => {
   const posts = await getCollection('blog')
   return posts.filter(filters.published).sort(sorters.byDate)
-})
+}
 
-export const getAllCrafts = () => getCached('crafts', async () => {
+export const getAllCrafts = async () => {
   const crafts = await getCollection('craft')
-  return crafts.filter(filters.published).sort(sorters.byDate)
-})
+  return crafts.sort(sorters.byDate)
+}
 
-export const getAllPostsAndSubposts = () => getCached('postsAndSubposts', async () => {
+export const getAllPostsAndSubposts = async () => {
   const posts = await getCollection('blog')
   return posts.filter(filters.notDraft).sort(sorters.byDate)
-})
+}
 
-export const getAllProjects = () => getCached('projects', async () => {
+export const getAllProjects = async () => {
   const projects = await getCollection('projects')
   return projects.sort(sorters.byStartDate)
-})
+}
 
 // Função genérica para adjacências
 async function getAdjacent<T extends CollectionEntry<'authors' | 'craft' | 'projects' | 'blog'>>(
@@ -68,37 +69,60 @@ async function getAdjacent<T extends CollectionEntry<'authors' | 'craft' | 'proj
 }
 
 // Posts adjacentes com lógica de subposts
-export async function getAdjacentPosts(currentId: string) {
+export async function getAdjacentPosts(currentId: string, locale: Lang) {
   if (isSubpost(currentId)) {
     const parentId = getParentId(currentId)
-    const parent = (await getAllPosts()).find(post => post.id === parentId) || null
+    const parent = 
+      (await getAllPosts())
+        .filter(post => post.id.includes(locale))
+        .find(post => post.id === parentId) || null
     
     const subposts = await getSubpostsForParent(parentId)
     const { newer, older } = await getAdjacent(subposts, currentId)
     return { newer, older, parent }
   }
 
-  const parentPosts = (await getAllPosts()).filter(filters.notSubpost)
+  const parentPosts = 
+    (await getAllPosts())
+      .filter(post => post.id.includes(locale))
+      .filter(filters.notSubpost)
   const { newer, older } = await getAdjacent(parentPosts, currentId)
   return { newer, older, parent: null }
 }
 
 // Adjacências simplificadas
-export const getAdjacentCrafts = async (currentId: string) => 
-  getAdjacent(await getAllCrafts(), currentId)
+export const getAdjacentCrafts = async (currentId: string, locale: Lang) => 
+  getAdjacent((await getAllCrafts()).filter(craft => craft.id.includes(locale)), currentId)
 
-export const getAdjacentProjects = async (currentId: string) => 
-  getAdjacent(await getAllProjects(), currentId)
+export const getAdjacentProjects = async (currentId: string, locale: Lang) => 
+  getAdjacent((await getAllProjects()).filter(project => project.id.includes(locale)), currentId)
 
 // Tags otimizado
 export async function getAllTags(): Promise<Map<string, number>> {
-  const [posts, projects] = await Promise.all([getAllPosts(), getAllProjects()])
-  
-  return [...posts, ...projects].reduce((acc, item) => {
-    item.data.tags?.forEach(tag => acc.set(tag, (acc.get(tag) || 0) + 1))
-    return acc
-  }, new Map<string, number>())
+  const [posts, projects] = await Promise.all([getAllPosts(), getAllProjects()]);
+
+  // Remove duplicaded tags
+  const dedupeById = <T extends { id: string }>(items: T[]) => {
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      const idWithoutLang = removeLangPrefix(item.id);
+      if (seen.has(idWithoutLang)) return false;
+      seen.add(idWithoutLang);
+      return true;
+    });
+  };
+
+  const uniquePosts = dedupeById(posts);
+  const uniqueProjects = dedupeById(projects);
+
+  return [...uniquePosts, ...uniqueProjects].reduce((acc, item) => {
+    item.data.tags?.forEach((tag) => {
+      acc.set(tag, (acc.get(tag) || 0) + 1);
+    });
+    return acc;
+  }, new Map<string, number>());
 }
+
 
 export async function getSortedTags() {
   const tagCounts = await getAllTags()
@@ -122,7 +146,7 @@ export const getProjectsByTag = async (tag: string) =>
   createFilterBy('tags')(tag)(await getAllProjects())
 
 // Funções de slice otimizadas
-const createGetRecent = (getter: () => Promise<any[]>) => 
+const createGetRecent = <T>(getter: () => Promise<T[]>) => 
   (count: number) => getter().then(items => items.slice(0, count))
 
 export const getRecentPosts = createGetRecent(getAllPosts)
@@ -130,8 +154,19 @@ export const getRecentProjects = createGetRecent(getAllProjects)
 export const getRecentCrafts = createGetRecent(getAllCrafts)
 
 // Utilitários de subposts
-export const isSubpost = (postId: string): boolean => postId.includes('/')
-export const getParentId = (subpostId: string): string => subpostId.split('/')[0]
+export const isSubpost = (postId: string): boolean => {
+  // Remove barra inicial, divide pelos segmentos
+  const parts = postId.replace(/^\/+/, '').split('/');
+
+  // parts[0] = lang, parts[1] = id principal
+  // Se houver mais de 2 partes, é subpost
+  return parts.length > 2;
+};
+
+export const getParentId = (subpostId: string): string => {
+  const parts = subpostId.split('/');
+  return parts.slice(0, 2).join('/');
+};
 
 export async function getSubpostsForParent(parentId: string) {
   const posts = await getCollection('blog')
@@ -189,18 +224,18 @@ export async function parseAuthors(authorIds: string[] = []) {
 
 // Reading time otimizado
 const createReadingTime = (getter: (id: string) => Promise<any>) => 
-  async (id: string): Promise<string> => {
+  async (id: string, locale: Lang): Promise<string> => {
     const item = await getter(id)
-    if (!item) return readingTime(0)
-    return readingTime(calculateWordCountFromHtml(item.body))
+    if (!item) return readingTime(0, locale)
+    return readingTime(calculateWordCountFromHtml(item.body), locale)
   }
 
 export const getPostReadingTime = createReadingTime(getPostById)
 export const getCraftReadingTime = createReadingTime(getCraftById)
 
-export async function getCombinedReadingTime(postId: string): Promise<string> {
+export async function getCombinedReadingTime(postId: string, locale: Lang): Promise<string> {
   const post = await getPostById(postId)
-  if (!post) return readingTime(0)
+  if (!post) return readingTime(0, locale)
 
   let totalWords = calculateWordCountFromHtml(post.body)
   
@@ -210,7 +245,7 @@ export async function getCombinedReadingTime(postId: string): Promise<string> {
       sum + calculateWordCountFromHtml(subpost.body), 0)
   }
   
-  return readingTime(totalWords)
+  return readingTime(totalWords, locale)
 }
 
 // TOC types
@@ -236,7 +271,6 @@ export async function getTOCSections(postId: string): Promise<TOCSection[]> {
   const parentId = isSubpost(postId) ? getParentId(postId) : postId
   const parentPost = isSubpost(postId) ? await getPostById(parentId) : post
   if (!parentPost) return []
-
   const sections: TOCSection[] = []
   const { headings: parentHeadings } = await render(parentPost)
   

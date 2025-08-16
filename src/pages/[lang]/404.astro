@@ -3,12 +3,8 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
-import type { Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { cn } from '@/lib/utils'
-import { getRelativeLocaleUrl } from 'astro:i18n'
-
-const locale = Astro.currentLocale as Lang;
 ---
 
 <Layout class="max-w-3xl">
@@ -23,7 +19,7 @@ const locale = Astro.currentLocale as Lang;
       <p class="prose">Oops! The page you're looking for doesn't exist.</p>
     </div>
     <Link
-      href={getRelativeLocaleUrl(locale, '/')}
+      href="/"
       class={cn(buttonVariants({ variant: 'outline' }), 'flex gap-x-1.5 group')}
     >
       <span class="transition-transform group-hover:-translate-x-1">&larr;</span

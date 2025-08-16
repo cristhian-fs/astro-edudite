@@ -2,24 +2,20 @@
 import BlogCard from '@/components/BlogCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
-import PaginationComponent from '@/components/ui/pagination'
-import { SITE } from '@/consts'
+import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, groupPostsByYear } from '@/lib/data-utils'
-import type { PaginateFunction } from 'astro'
+import { getCollection } from 'astro:content'
 
-export async function getStaticPaths({
-  paginate,
-}: {
-  paginate: PaginateFunction
-}) {
-  const allPosts = await getAllPosts()
-  return paginate(allPosts, { pageSize: SITE.postsPerPage })
-}
+export const getStaticPaths = () =>
+  Object.keys(LOCALES).map((lang) => ({
+    params: { lang },
+  }));
 
-const { page } = Astro.props
-
-const postsByYear = groupPostsByYear(page.data)
+const locale = Astro.currentLocale as Lang;
+const posts = await getAllPosts();
+const filteredByLocaled = posts.filter((post) => post.id.includes(locale))
+const postsByYear = groupPostsByYear(filteredByLocaled)
 const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
@@ -28,7 +24,6 @@ const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
   <Breadcrumbs
     items={[
       { label: 'Blog', href: '/blog', icon: 'lucide:archive' },
-      { label: `Page ${page.currentPage}`, icon: 'lucide:folder-open' },
     ]}
   />
 
@@ -48,11 +43,4 @@ const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
       ))
     }
   </div>
-
-  <PaginationComponent
-    currentPage={page.currentPage}
-    totalPages={page.lastPage}
-    baseUrl="/blog/"
-    client:load
-  />
 </Layout>

@@ -1,11 +1,12 @@
 import type { IconMap, SocialLink, Site, Tech } from '@/types'
+import { set } from 'astro:schema'
 
 export const SITE: Site = {
   title: 'Cristhian F.',
   description:
-    'astro-erudite is a opinionated, unstyled blogging template—built with Astro, Tailwind, and shadcn/ui.',
-  href: 'https://astro-erudite.vercel.app',
-  author: 'jktrn',
+    'Frontend developer based in Brasil.',
+  href: 'https://cristhianf.dev',
+  author: 'cristhian-fs',
   locale: 'en-US',
   featuredPostCount: 2,
   postsPerPage: 3,
@@ -19,7 +20,10 @@ export const NAV_LINKS: SocialLink[] = [
   },
   {
     href: '/projects',
-    label: 'projects',
+    label: {
+      en: 'projects',
+      'pt-br': 'projetos',
+    },
   },
   {
     href: '/craft',
@@ -42,7 +46,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
   },
   {
     href: 'mailto:cristhianfernandolp@gmail.com',
-    label: 'Email',
+    label: {
+      en: 'Mail',
+      'pt-br': 'Email',
+    },
   },
   {
     href: '/rss.xml',

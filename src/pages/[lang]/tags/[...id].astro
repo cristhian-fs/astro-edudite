@@ -3,31 +3,38 @@ import BlogCard from '@/components/BlogCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import ProjectCard from '@/components/projects/ProjectCard.astro'
+import { LOCALES, type Lang } from '@/i18n/types'
 import Layout from '@/layouts/Layout.astro'
 import { getAllTags, getPostsByTag, getProjectsByTag } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
 export async function getStaticPaths() {
   const tagMap = await getAllTags()
   const uniqueTags = Array.from(tagMap.keys())
+  const langs = Object.keys(LOCALES) as Lang[];
 
   return Promise.all(
-    uniqueTags.map(async (tag) => {
-      const posts = await getPostsByTag(tag);
-      const projects = await getProjectsByTag(tag);
-      return {
-        params: { id: tag },
-        props: {
-          tag,
-          posts,
-          projects
-        },
-      }
-    }),
-  )
+    langs.flatMap((lang) =>
+      uniqueTags.map(async (tag) => {
+        const posts = await getPostsByTag(tag);
+        const filteredPosts = posts.filter((post) => post.id.includes(lang))
+        const projects = await getProjectsByTag(tag);
+        const filteredProjects = projects.filter((project) => project.id.includes(lang))
+        return {
+          params: { id: tag, lang },
+          props: {
+            tag,
+            filteredPosts,
+            filteredProjects
+          },
+        }
+      }),
+  ))
 }
 
-const { tag, posts, projects } = Astro.props
+const locale = Astro.currentLocale as Lang
+const { tag, filteredPosts, filteredProjects } = Astro.props
 ---
 
 <Layout class="max-w-3xl">
@@ -38,7 +45,7 @@ const { tag, posts, projects } = Astro.props
   />
   <Breadcrumbs
     items={[
-      { href: '/tags', label: 'Tags', icon: 'lucide:tags' },
+      { href: getRelativeLocaleUrl(locale, '/tags'), label: 'Tags', icon: 'lucide:tags' },
       { label: tag, icon: 'lucide:tag' },
     ]}
   />
@@ -54,14 +61,14 @@ const { tag, posts, projects } = Astro.props
 
   <ul class="flex flex-col gap-y-4">
     {
-      posts.map((post) => (
+      filteredPosts.map((post) => (
         <li>
           <BlogCard entry={post} />
         </li>
       ))
     }
     {
-      projects.map((project) => (
+      filteredProjects.map((project) => (
         <li>
           <ProjectCard project={project} />
         </li>

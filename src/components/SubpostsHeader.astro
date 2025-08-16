@@ -10,6 +10,10 @@ import {
   isSubpost,
 } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
+import type { Lang } from '@/i18n/types'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import { removeLangPrefix } from '@/lib/utils'
+const locale = Astro.currentLocale as Lang
 
 const { parentId } = Astro.props
 const currentPostId = Astro.params.id as string
@@ -114,7 +118,7 @@ const currentSubpostDetails = isCurrentSubpost
                     </div>
                   ) : (
                     <a
-                      href={`/blog/${activePost.id}`}
+                      href={getRelativeLocaleUrl(locale,`/blog/${removeLangPrefix(activePost.id)}`)}
                       class="mobile-subposts-link hover:text-foreground text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
                     >
                       <Icon
@@ -164,7 +168,7 @@ const currentSubpostDetails = isCurrentSubpost
                       </div>
                     ) : (
                       <a
-                        href={`/blog/${subpost.id}`}
+                        href={getRelativeLocaleUrl(locale,`/blog/${removeLangPrefix(subpost.id)}`)}
                         class="mobile-subposts-link hover:text-foreground text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
                       >
                         <Icon

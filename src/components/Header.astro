@@ -3,8 +3,12 @@ import Link from '@/components/Link.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import MobileMenu from '@/components/ui/mobile-menu'
 import { NAV_LINKS, SITE } from '@/consts'
-import { Image } from 'astro:assets'
-import logo from '../../public/static/logo.svg'
+import { useTranslations } from '@/i18n'
+import type { Lang } from '@/i18n/types'
+import { getRelativeLocaleUrl, getRelativeLocaleUrlList } from 'astro:i18n'
+
+const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
 ---
 
 <header
@@ -14,7 +18,7 @@ import logo from '../../public/static/logo.svg'
   <div
     class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 p-4"
   >
-    <Link href="/" class="flex shrink-0 items-center gap-2 text-xl font-medium">
+    <Link href={getRelativeLocaleUrl(locale, '/')} class="flex shrink-0 items-center gap-2 text-xl font-medium">
       {SITE.title}
     </Link>
     <div class="flex items-center gap-2 md:gap-4">
@@ -22,10 +26,10 @@ import logo from '../../public/static/logo.svg'
         {
           NAV_LINKS.map((item) => (
             <Link
-              href={item.href}
+              href={getRelativeLocaleUrl(locale, item.href)}
               class="text-foreground/60 hover:text-foreground/80 capitalize transition-colors"
             >
-              {item.label}
+              {typeof item.label === 'string' ?  item.label : t(item.label)}
             </Link>
           ))
         }
