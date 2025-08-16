@@ -1,70 +1,70 @@
 ---
 title: 'JustRun Devlog: 2025-08'
-description: "The initial working"
+description: "O trabalho inicial"
 date: 2025-08-13
 authors: ['cristhian']
 ---
 import Callout from "@/components/Callout.astro"
 
-# Devlog #1 — Context & Current Progress
+# Devlog #1 — Contexto e progresso atual
 
-## 📌 Why I’m starting this log now
-I’ve already built a good part of the app before deciding to write a development log.  
-To avoid starting in the middle of the story, I’ll use this first entry to give some context, share my current progress, and outline my next steps.
-
----
-
-## 🎯 Project Overview
-**JustRun** is an online platform for runners who want to improve their training results.  
-Users can enter their personal details (age, gender, weight, height) and results from a running test.  
-The app automatically calculates performance stats and generates a fully customized training periodization.
+## 📌 Por que estou começando este registro agora
+Já construí boa parte do aplicativo antes de decidir escrever um registro de desenvolvimento.  
+Para evitar começar no meio da história, usarei esta primeira entrada para dar algum contexto, compartilhar meu progresso atual e delinear meus próximos passos.
 
 ---
 
-## ⚙️ Current Progress
+## 🎯 Visão geral do projeto
+O **JustRun** é uma plataforma online para corredores que desejam melhorar seus resultados de treinamento.  
+Os usuários podem inserir seus dados pessoais (idade, sexo, peso, altura) e os resultados de um teste de corrida.  
+O aplicativo calcula automaticamente as estatísticas de desempenho e gera uma periodização de treinamento totalmente personalizada.
 
-### Onboarding
-The onboarding flow consists of several steps where the user updates personal information such as weight, height, and age.  
-This data will be used in training calculations.
+---
+
+## ⚙️ Progresso atual
+
+### Integração
+O fluxo de integração consiste em várias etapas nas quais o usuário atualiza informações pessoais, como peso, altura e idade.  
+Esses dados serão usados nos cálculos de treinamento.
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
   <div class="">
-    ![Onboarding first screen](../../../../../public/static/blog/justrun-devlog/assets/onboarding-screen-1.webp)
+    ![Primeira tela de integração](../../../../../public/static/blog/justrun-devlog/assets/onboarding-screen-1.webp)
   </div>
   <div class="">
-    ![Onboarding second screen](../../../../../public/static/blog/justrun-devlog/assets/onboarding-screen-2.webp)
+    ![Segunda tela de integração](../../../../../public/static/blog/justrun-devlog/assets/onboarding-screen-2.webp)
   </div>
   <div class="">
-    ![Onboarding third screen](../../../../../public/static/blog/justrun-devlog/assets/onboarding-screen-3.webp)
+    ![Terceira tela de integração](../../../../../public/static/blog/justrun-devlog/assets/onboarding-screen-3.webp)
   </div>
 </div>
 
 ---
 
-### Home Page
-The home page displays key training metrics:
-- Next scheduled workout  
-- Weekly running volume  
-- Monthly summary  
-- Volume progression over time  
-- Weekly intensity distribution
+### Página inicial
+A página inicial exibe as principais métricas de treinamento:
+- Próximo treino programado  
+- Volume semanal de corrida  
+- Resumo mensal  
+- Progressão do volume ao longo do tempo  
+- Distribuição semanal da intensidade
 
-![App homepage](../../../../../public/static/blog/justrun-devlog/assets/app-homepage.webp)
+![Página inicial do aplicativo](../../../../../public/static/blog/justrun-devlog/assets/app-homepage.webp)
 
-Clicking on a workout card opens the `<WorkoutSheet />`, showing:
-- Full training structure  
-- Estimated distance and time  
-- Target paces and notes
+Clicar em um cartão de treino abre a `<WorkoutSheet />`, mostrando:
+- Estrutura completa do treinamento
+- Distância e tempo estimados
+- Ritmos alvo e notas
 
 <div class="flex justify-center">
   <div class="max-w-xs">
-    ![Workout sheet opened](../../../../../public/static/blog/justrun-devlog/assets/workout-sheet-opened.webp)
+    ![Folha de treino aberta](../../../../../public/static/blog/justrun-devlog/assets/workout-sheet-opened.webp)
   </div>
 </div>
 
-### API Example
+### Exemplo da API
 
-Here’s an example of a workout returned from the API:
+Aqui está um exemplo de um treino retornado pela API:
 ```js title="/api/workouts/:id response" collapse={6-61}
 {
   "runType": "INTERVAL",
@@ -135,17 +135,17 @@ Here’s an example of a workout returned from the API:
 
 ---
 
-### Workout planning page
+### Página de planejamento de treinos
 
-The workout planning page shows the entire user current periodization in three different ways:
-- Days
-- Month  
-- Week (this is a custom view that I kinda liked to develop)
+A página de planejamento de treinos mostra toda a periodização atual do usuário de três maneiras diferentes:
+- Dias
+- Mês  
+- Semana (essa é uma visualização personalizada que eu gostei de desenvolver)
 
-![App homepage](../../../../../public/static/blog/justrun-devlog/assets/planning-week-view.webp)
+![Página inicial do aplicativo](../../../../../public/static/blog/justrun-devlog/assets/planning-week-view.webp)
 
-To build this calendar, I've used the [Reat big calendar](https://www.npmjs.com/package/react-big-calendar) library, which is kinda easy to setup, just a few steps and it handles the magic, and of course, I needed to take a few minutes to make all custom css to get in the way.
-Because `react-big-calendar` doesn't have the types, I have to install it separately, and look for the correct types to build the custom view in the `node_modules` folder. But worth it(Maybe just me think that -_-).
+Para criar este calendário, usei a biblioteca [Reat big calendar](https://www.npmjs.com/package/react-big-calendar), que é bastante fácil de configurar, bastando alguns passos para que ela faça a mágica, e, claro, precisei de alguns minutos para criar todo o css personalizado necessário.
+Como o `react-big-calendar` não tem os tipos, tive que instalá-lo separadamente e procurar os tipos corretos para criar a visualização personalizada na pasta `node_modules`. Mas valeu a pena (talvez só eu ache isso -_-).
 
 ```tsx title="custom-view.tsx"
 // CUSTOM WEEK
@@ -221,25 +221,25 @@ MyWeek.title = (date: Date) => {
 
 ---
 
-### Training zones
+### Zonas de treinamento
 
-I don't want to extend much here, basically this screen shows the user training zones for each zone, that goes from Z1 to Z5, representing the vo2 percentage used in each zone, and the kinds of workouts that are made in these training zones.
+Não quero me alongar muito aqui, basicamente esta tela mostra as zonas de treinamento do usuário para cada zona, que vão de Z1 a Z5, representando a porcentagem de vo2 usada em cada zona e os tipos de exercícios que são feitos nessas zonas de treinamento.
 
-![App homepage](../../../../../public/static/blog/justrun-devlog/assets/training-zones.webp)
+![Página inicial do aplicativo](../../../../../public/static/blog/justrun-devlog/assets/training-zones.webp)
 
 ---
 
-### Calc page
+### Página de cálculo
 
-This one was a challenging one to develop, specially because I had to know how exactly the values must be calculated, so while I was searching for the Jack Daniels DVOT formula, used in the [VDOT Calculator](https://vdoto2.com/calculator/), I found this excel sheet:
+Esta foi uma página desafiadora de desenvolver, especialmente porque eu precisava saber exatamente como os valores deveriam ser calculados. Então, enquanto procurava pela fórmula DVOT de Jack Daniels, usada na [Calculadora VDOT](https://vdoto2.com/calculator/), encontrei esta planilha do Excel:
 
-![Jack Daniels Calc sheet](../../../../../public/static/blog/justrun-devlog/assets/jack-daniels-sheet-calcs.webp)
+![Planilha de cálculo Jack Daniels](../../../../../public/static/blog/justrun-devlog/assets/jack-daniels-sheet-calcs.webp)
 
-So I have to understand how exactly every calc as related to each other to give me the correct resuts, so I ended up with this understandment:
+Então, eu preciso entender exatamente como cada cálculo se relaciona com o outro para me dar os resultados corretos, então cheguei a esta conclusão:
 
 #### VDOT
 
-To calc VDOT percentage and VDOT, respectively,  this was the formula:
+Para calcular a porcentagem de VDOT e o VDOT, respectivamente, esta foi a fórmula:
 
 $$
 0.8 + 0.1894393\, e^{-0.012778\, G_6 \cdot 1440} + 0.2989558\, e^{-0.1932605\, G_6 \cdot 1440}
@@ -249,16 +249,16 @@ $$
 \frac{-4.6 + 0.182258 \cdot \frac{\frac{F_8}{G_6}}{1440} + 0.000104 \cdot \frac{\frac{F_8}{G_6}}{1440}^2}{D_9}
 $$
 
-If you didn't understand sh1t, me neither, but it'll try to explait:
+Se você não entendeu nada, eu também não, mas vou tentar explicar:
 
-- `$E$6` is the distance, must be grater than 0
-- `$G$6` is the time in days(yes, excel works in days)
-- `F8` is just a mapping function to get the distance in meters based on the E6
-- `D9` is the VDOT percentage (this must be a max value)
+- `$E$6` é a distância, deve ser maior que 0
+- `$G$6` é o tempo em dias (sim, o Excel trabalha em dias)
+- `F8` é apenas uma função de mapeamento para obter a distância em metros com base no E6
+- `D9` é a porcentagem VDOT (deve ser um valor máximo)
 
-Converting this to typescript, we got two different functions:
+Convertendo isso para typescript, obtivemos duas funções diferentes:
 
-1. The first one calculates the VDOT percentage:
+1. A primeira calcula a porcentagem VDOT:
 
 ```ts
 export function calculateVDOTPercentage({
@@ -276,7 +276,7 @@ export function calculateVDOTPercentage({
 }
 ```
 
-2. The second one calculates the VDOT:
+2. A segunda calcula o VDOT:
 
 ```ts
 export function calculateVDOT({
@@ -302,24 +302,24 @@ export function calculateVDOT({
 }
 ```
 
-> I could spend good time writing all the calcs that I had to do to convert a little part of this sheet into my Typescript code, but I'm too lazy for that. I just prefer to show you the final result.
+Eu poderia passar um bom tempo escrevendo todos os cálculos que tive que fazer para converter uma pequena parte desta planilha em meu código Typescript, mas sou muito preguiçoso para isso. Prefiro apenas mostrar o resultado final.
 
-![App homepage](../../../../../public/static/blog/justrun-devlog/assets/calc-screen.webp)
+![Página inicial do aplicativo](../../../../../public/static/blog/justrun-devlog/assets/calc-screen.webp)
 
 ---
 
-## 📚 The challenge ahead
+## 📚 O desafio à frente
 
-Recently, I came across the book [Daniel’s Running Formula](https://www.google.com/search?q=daniels+running+formula&sourceid=chrome&ie=UTF-8) by Jack Daniels — arguably the most renowned running coach out there. His training methods are scientifically proven and highly effective.
+Recentemente, encontrei o livro [Daniel’s Running Formula](https://www.google.com/search?q=daniels+running+formula&sourceid=chrome&ie=UTF-8) de Jack Daniels — indiscutivelmente o treinador de corrida mais renomado que existe. Seus métodos de treinamento são cientificamente comprovados e altamente eficazes.
 
-My plan is to integrate Daniels’ methodology into the app’s workout generator for even more accurate and personalized results.
+Meu plano é integrar a metodologia de Daniels ao gerador de treinos do aplicativo para obter resultados ainda mais precisos e personalizados.
 
-The challenge? The book is 400+ pages of technical content, so it will take time to fully understand and implement. But I’m convinced the results will be worth it.
+O desafio? O livro tem mais de 400 páginas de conteúdo técnico, então levará tempo para compreendê-lo e implementá-lo totalmente. Mas estou convencido de que os resultados valerão a pena.
 
-## 🔜 Next Steps
+## 🔜 Próximos passos
 
-- Study and summarize Jack Daniels’ formula
-- Design a data model that supports his training principles
-- Update the workout generator logic
-- Test with real runners and collect feedback
-- Improve the app mobile navigation
+- Estudar e resumir a fórmula de Jack Daniels
+- Projetar um modelo de dados que apoie seus princípios de treinamento
+- Atualizar a lógica do gerador de treinos
+- Testar com corredores reais e coletar feedback
+- Melhorar a navegação móvel do aplicativo
