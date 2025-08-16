@@ -21,7 +21,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from './src/i18n/locales'
 
 export default defineConfig({
-  site: 'https://astro-erudite.vercel.app',
+  site: 'https://cristhianf.dev',
   integrations: [
     expressiveCode({
       themes: ['github-light', 'github-dark'],
