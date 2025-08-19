@@ -1,7 +1,7 @@
 ---
 name: 'cristhian'
 pronouns: 'he/him'
-avatar: '/mcdonalds.png'
+avatar: '/obito.jpg'
 bio: 'd(-_-)b'
 website: 'https://cristhianf.dev'
 twitter: 'https://twitter.com/cristhianuix'

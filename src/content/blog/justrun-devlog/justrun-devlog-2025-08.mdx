@@ -29,13 +29,13 @@ This data will be used in training calculations.
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
   <div class="">
-    ![Onboarding first screen](./assets/onboarding-screen-1.png)
+    ![Onboarding first screen](./assets/onboarding-screen-1.webp)
   </div>
   <div class="">
-    ![Onboarding second screen](./assets/onboarding-screen-2.png)
+    ![Onboarding second screen](./assets/onboarding-screen-2.webp)
   </div>
   <div class="">
-    ![Onboarding third screen](./assets/onboarding-screen-3.png)
+    ![Onboarding third screen](./assets/onboarding-screen-3.webp)
   </div>
 </div>
 
@@ -49,7 +49,7 @@ The home page displays key training metrics:
 - Volume progression over time  
 - Weekly intensity distribution
 
-![App homepage](./assets/app-homepage.png)
+![App homepage](./assets/app-homepage.webp)
 
 Clicking on a workout card opens the `<WorkoutSheet />`, showing:
 - Full training structure  
@@ -58,7 +58,7 @@ Clicking on a workout card opens the `<WorkoutSheet />`, showing:
 
 <div class="flex justify-center">
   <div class="max-w-xs">
-    ![Workout sheet opened](./assets/workout-sheet-opened.png)
+    ![Workout sheet opened](./assets/workout-sheet-opened.webp)
   </div>
 </div>
 
@@ -142,7 +142,7 @@ The workout planning page shows the entire user current periodization in three d
 - Month  
 - Week (this is a custom view that I kinda liked to develop)
 
-![App homepage](./assets/planning-week-view.png)
+![App homepage](./assets/planning-week-view.webp)
 
 To build this calendar, I've used the [Reat big calendar](https://www.npmjs.com/package/react-big-calendar) library, which is kinda easy to setup, just a few steps and it handles the magic, and of course, I needed to take a few minutes to make all custom css to get in the way.
 Because `react-big-calendar` doesn't have the types, I have to install it separately, and look for the correct types to build the custom view in the `node_modules` folder. But worth it(Maybe just me think that -_-).
@@ -225,7 +225,7 @@ MyWeek.title = (date: Date) => {
 
 I don't want to extend much here, basically this screen shows the user training zones for each zone, that goes from Z1 to Z5, representing the vo2 percentage used in each zone, and the kinds of workouts that are made in these training zones.
 
-![App homepage](./assets/training-zones.jpg)
+![App homepage](./assets/training-zones.webp)
 
 ---
 
@@ -233,7 +233,7 @@ I don't want to extend much here, basically this screen shows the user training 
 
 This one was a challenging one to develop, specially because I had to know how exactly the values must be calculated, so while I was searching for the Jack Daniels DVOT formula, used in the [VDOT Calculator](https://vdoto2.com/calculator/), I found this excel sheet:
 
-![Jack Daniels Calc sheet](./assets/jack-daniels-sheet-calcs.jpg)
+![Jack Daniels Calc sheet](./assets/jack-daniels-sheet-calcs.webp)
 
 So I have to understand how exactly every calc as related to each other to give me the correct resuts, so I ended up with this understandment:
 
@@ -304,7 +304,7 @@ export function calculateVDOT({
 
 > I could spend good time writing all the calcs that I had to do to convert a little part of this sheet into my Typescript code, but I'm too lazy for that. I just prefer to show you the final result.
 
-![App homepage](./assets/calc-screen.jpg)
+![App homepage](./assets/calc-screen.webp)
 
 ---
 
