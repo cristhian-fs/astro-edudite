@@ -1,0 +1,190 @@
+---
+title: "Custom tab buttons"
+date: 2024-11-14
+image: './banner.webp'
+---
+
+import CustomTabButtons from "./custom-tab-buttons.astro"
+
+<CustomTabButtons />
+
+## Structure
+
+To start it, we'll need to structure the `HTML`, I personaly took this approach:
+
+```html title=index.html
+<section class="container tabs-section">
+  <div class="tab-btns-wrapper">
+    <button data-tab-btn>Button cta</button>
+    <button data-tab-btn>Button</button>
+    <button data-tab-btn>Button call to action</button>
+    <button data-tab-btn>Button wrapper</button>
+  </div>
+</section>
+```
+
+After this, we need to style this a little, so I just wrote a few lines of `CSS`
+
+```css title="style.css" collapse={31-43}
+[data-tab-btn] {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem; 
+  padding-left: 0.5rem;
+  padding-right: 0.5rem; 
+  border-radius: 9999px; 
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  
+}
+
+.tab-btns::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btns-wrapper{
+  display: flex; 
+  gap: 0.5rem; 
+  font-size: 1rem; 
+  line-height: 1.75rem; 
+  position: relative;
+  border: 1px solid hsl(0 0 15%);
+  background: hsl(0 0 7%);
+  z-index: 3;
+  border-radius: 32px;
+  padding: 4px;
+  overflow: hidden;
+
+  &::after{
+    content: "";
+    position: absolute;
+    width: var(--active-tab-width, 0);
+    height: var(--active-tab-height,0);
+    left: calc(var(--x-position, 0));
+    top: var(--y-position, 0);
+    background-color: hsl(0 0% 100% / 0.056);
+    border: 1px solid hsl(0 0% 100% / 0.1);
+    border-radius: var(--radius, 32px);
+    transition: 0.4s all cubic-bezier(.11,.78,.5,.98);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-1px, -1px);
+  }
+  * {
+    z-index: 2;
+    position: relative;
+    cursor: pointer;
+  }
+ 
+}
+[data-tab-btn].active{
+  color: #fafafa;
+}
+```
+
+After this, it's time to animate it, if you read the css lines (you probably didn't read), you have noticed that I made this css variables on the `::after` pseudo-element:
+
+```css title="after pseudo element" {4-7, 10}
+&::after{
+  content: "";
+  position: absolute;
+  width: var(--active-tab-width, 0);
+  height: var(--active-tab-height,0);
+  left: calc(var(--x-position, 0));
+  top: var(--y-position, 0);
+  background-color: hsl(0 0% 100% / 0.056);
+  border: 1px solid hsl(0 0% 100% / 0.1);
+  border-radius: var(--radius, 32px);
+  transition: 0.4s all cubic-bezier(.11,.78,.5,.98);
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-1px, -1px);
+}
+```
+
+I like to use this approach sometimes, when the element is kinda simple, I just use pseudo elements, it's easier.
+
+To animate the `pseudo-element`, first we need to select his parent, and all the buttons that can be clicked
+
+```js showLineNumbers={false}
+const tabBtns = Array.from(document.querySelectorAll("[data-tab-btn]"));
+const tabsWrapper = document.querySelector(".tab-btns-wrapper");
+```
+
+Now, we need to make a function that will be called whenever a button are clicked
+
+```js title="animatePseudoElement()"
+function animatePseudoElement({target, coords, index, totalBtns}) {
+  const { x: xParent, y: yParent } = target.getBoundingClientRect();
+  const { x,y, width, height } = coords;
+
+  // Define o border-radius baseado na posição do botão
+  const borderRadius = determineBorderRadius(index, totalBtns);
+
+  target.style.setProperty('--x-position', `${x - xParent}px`);
+  target.style.setProperty('--y-position', `${y - yParent}px`);
+  target.style.setProperty('--active-tab-width', `${width}px`);
+  target.style.setProperty('--active-tab-height', `${height}px`);
+  target.style.setProperty('--radius', borderRadius);
+}
+```
+
+##### Explaining props
+- `target`: It's the button wrapper
+- `coords`: The button that being clicked coords (generated from `element.getBoundingClientRect()`)
+- `index`: The button index
+- `totalBtns`: the length of the selected buttons
+
+
+##### Determining `border-radius`
+
+I also made this util to determine the element border radius, since this must be changed when the active button is the first or the last one.
+
+```js title="determineBorderRadius()"
+function determineBorderRadius(index, totalBtns) {
+  if (index === 0) {
+    return '32px 4px 4px 32px';  // First button
+  }
+  if (index === totalBtns - 1) {
+    return '4px 32px 32px 4px';  // Last button
+  }
+  return '32px'; // Midle buttons
+}
+```
+
+Now, we just need to call the function when a button are clicked, and since we don't have the css variables values when the page loads, we have to call this button to some active button, if we don't have one, it'll be the first one
+
+```js title="final" add={3,5-15,17-23}
+const tabBtns = Array.from(document.querySelectorAll("[data-tab-btn]"));
+const tabsWrapper = document.querySelector(".tab-btns-wrapper");
+let activeBtn = document.querySelector("[data-tab-btn].active") || tabBtns[0];
+
+tabBtns.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    activeBtn = btn;
+    animatePseudoElement({
+      target: tabsWrapper,
+      coords: btn.getBoundingClientRect(), 
+      index: tabBtns.indexOf(btn),
+      totalBtns: tabBtns.length
+    });
+  });
+});
+
+// Setup initial state
+animatePseudoElement({
+  target: tabsWrapper,
+  coords: activeBtn.getBoundingClientRect(), 
+  index: tabBtns.indexOf(activeBtn),
+  totalBtns: tabBtns.length
+});
+
+// Rest...
+```
+
+---
+
+#### Source code
+
+You can also see the source code [here](https://codepen.io/cristhianf/pen/poMYWgm).
+
