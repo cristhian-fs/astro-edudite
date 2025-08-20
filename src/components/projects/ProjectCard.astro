@@ -19,6 +19,7 @@ const { project } = Astro.props
   <Link
     href={project.data.link}
     class="flex flex-col sm:flex-row gap-4"
+    external={project.data.link.startsWith('http')}
   >
     {
       project.data.image && (
