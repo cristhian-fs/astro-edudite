@@ -1,4 +1,5 @@
 ---
+import CraftNavigation from '@/components/craft/CraftNavigation.astro';
 import CraftHead from '@/components/CraftHead.astro';
 import Link from '@/components/Link.astro';
 import PostNavigation from '@/components/PostNavigation.astro';
@@ -52,9 +53,9 @@ const craftReadingTime = await getCraftReadingTime(currentCraftId);
     <Content />
   </article>
   <Separator className='my-16'/>
-  <PostNavigation
-    newerPost={navigation.newer}
-    olderPost={navigation.older}
+  <CraftNavigation
+    nextPost={navigation.newer}
+    prevPost={navigation.older}
   />
 </Layout>
 

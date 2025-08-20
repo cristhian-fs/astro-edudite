@@ -130,3 +130,26 @@
     @apply transition-none!;
   }
 }
+
+/* Craft components container */
+.craft-item__container-outer{
+  padding: 0.25rem;
+  background: color-mix(in oklab, var(--color-muted) 10%, transparent);
+  border-radius: calc(0.5rem + 0.25rem);
+  border: 1px solid var(--color-border);
+}
+.craft-item__container{
+  display: flex; 
+  position: relative; 
+  flex-direction: column; 
+  gap: 2rem; 
+  justify-content: center; 
+  align-items: center; 
+  width: 100%; 
+  min-height: 384px;
+  color: var(--color-foreground);
+  background: color-mix(in oklab, var(--color-muted) 5%, transparent);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+}
