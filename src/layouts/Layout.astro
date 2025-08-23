@@ -26,12 +26,12 @@ const { class: className } = Astro.props
       <div
         class="bg-background/50 sticky top-0 z-50 divide-y backdrop-blur-sm xl:divide-none"
       >
-        <Header />
+        <!-- <Header /> -->
         <slot name="subposts-navigation" />
         <slot name="table-of-contents" />
       </div>
-      <main class="grow">
-        <div class={cn('mx-auto flex grow flex-col gap-y-6 px-4', className)}>
+      <main class="grow has-[.line[data-direction='horizontal']]:overflow-x-hidden">
+        <div class={cn('mx-auto flex grow flex-col', className)}>
           <slot />
         </div>
       </main>

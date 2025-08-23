@@ -20,10 +20,10 @@ import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  site: 'https://astro-erudite.vercel.app',
+  site: 'https://cristhianf.dev',
   integrations: [
     expressiveCode({
-      themes: ['github-light', 'github-dark'],
+      themes: ['github-light-default', 'github-dark'],
       plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
       useDarkModeMediaQuery: false,
       themeCssSelector: (theme) => `.${theme.name.split('-')[1]}`,
@@ -64,11 +64,12 @@ export default defineConfig({
           inlineButtonBackgroundActiveOpacity: 'transparent',
           inlineButtonBackgroundIdleOpacity: '1',
         },
+        codePaddingInline: '0.5rem',
         lineNumbers: {
           foreground: 'var(--muted-foreground)',
         },
         uiFontFamily: 'var(--font-sans)',
-      },
+      },    
     }),
     mdx(),
     react(),
