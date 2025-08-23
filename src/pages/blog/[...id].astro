@@ -42,7 +42,7 @@ const parentPost = isCurrentSubpost ? await getParentPost(currentPostId) : null
 const hasChildPosts = await hasSubposts(currentPostId)
 ---
 
-<Layout class='py-16'>
+<Layout class='py-16 px-4'>
   <PostHead slot="head" post={post} />
   {
     (hasChildPosts || isCurrentSubpost) && (
@@ -62,7 +62,7 @@ const hasChildPosts = await hasSubposts(currentPostId)
   }
 
   <section
-    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)] gap-y-12"
+    class="grid grid-cols-[minmax(0px,1fr)_min(calc(42rem-2rem),100%)_minmax(0px,1fr)] gap-y-12"
   >
     <section class="col-start-2 flex flex-col gap-y-6">
       <Breadcrumbs
@@ -91,7 +91,13 @@ const hasChildPosts = await hasSubposts(currentPostId)
         ]}
       />
       <div class="flex flex-col">
-        <div class="text-muted-foreground divide-border flex flex-col items-center divide-y text-xs sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm mb-3">
+        <h1
+          class="scroll-mt-31 text-3xl leading-tight font-medium sm:text-4xl mb-3"
+          id="post-title"
+        >
+          {post.data.title}
+        </h1>
+        <div class="text-muted-foreground divide-border flex flex-col items-start md:items-center divide-y text-xs sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm">
           {authors.length > 0 && (
             <div class="flex w-full items-center justify-center gap-x-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
               {authors.map((author) => (
@@ -124,12 +130,7 @@ const hasChildPosts = await hasSubposts(currentPostId)
             <span>{formatDate(post.data.date)}</span>
           </div>
         </div>
-        <h1
-          class="scroll-mt-31 text-3xl leading-tight font-medium sm:text-4xl"
-          id="post-title"
-        >
-          {post.data.title}
-        </h1>
+        
 
         {
           post.data.image && (

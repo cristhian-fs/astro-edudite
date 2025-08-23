@@ -26,7 +26,7 @@ const navigation = await getAdjacentCrafts(currentCraftId);
 const craftReadingTime = await getCraftReadingTime(currentCraftId);
 ---
 
-<Layout class='max-w-3xl'>
+<Layout class='max-w-2xl pt-10 px-4'>
   <CraftHead slot="head" craft={craft} />
   <div class="flex w-full justify-between items-center">
     <Link
@@ -49,7 +49,7 @@ const craftReadingTime = await getCraftReadingTime(currentCraftId);
       <span class="sr-only">Copy link</span>
     </Link>
   </div>
-  <article class="prose col-start-2 max-w-none">
+  <article class="prose col-start-2 max-w-none mt-10">
     <Content />
   </article>
   <Separator className='my-16'/>

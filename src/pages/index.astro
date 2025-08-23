@@ -1,42 +1,49 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
 import CraftCard from '@/components/CraftCard.astro'
+import Line from '@/components/line.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import ProjectCard from '@/components/projects/ProjectCard.astro'
+import ThemeToggle from '@/components/ThemeToggle.astro'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SITE, TECHSTACK } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentCrafts, getRecentPosts, getRecentProjects } from '@/lib/data-utils'
+import { getAllProjects, getRecentCrafts, getRecentPosts, getRecentProjects } from '@/lib/data-utils'
+import { cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 
+const allProjects = await getAllProjects()
 const projects = await getRecentProjects(SITE.featuredPostCount)
 const crafts = await getRecentCrafts(SITE.featuredCraftCount)
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
-<Layout class="max-w-3xl pt-12">
+<Layout class="max-w-2xl pt-16 relative px-0">
   <PageHead slot="head" title="Home" />
+  <Line 
+    direction="vertical"
+    class='fixed top-0 right-4 md:right-[calc(50%-42rem/2)]'
+  />
+  <Line 
+    direction="vertical"
+    class='fixed top-0 left-4 md:left-[calc(50%-42rem/2)]'
+  />
   <section>
     <div
-      class="flex flex-col gap-2 sm:gap-4"
+      class="flex flex-col gap-2 sm:gap-4 relative py-10 px-8 md:px-4"
     >
-      <div class="flex items-center gap-x-4">
-        <div class="size-12 overflow-hidden rounded-md border shadow-sm">
-          <img
-            src="/obito.jpg"
-            alt="Avatar of Cristhian"
-            class="h-full w-full object-cover"
-          />
-        </div>
-        <div class="flex flex-col">
-          <h3 class="text-lg leading-none font-medium">Cristhian</h3>
-          <p class="text-muted-foreground text-sm">
-            Front-end developer
-          </p>
-        </div>
+      <Line 
+        direction="horizontal"
+        class="absolute top-0 left-1/2"
+      />
+      <div class="flex flex-col">
+        <h3 class="text-lg leading-none font-medium">Cristhian</h3>
+        <p class="text-muted-foreground text-sm">
+          Front-end developer
+        </p>
       </div>
       <p class="text-muted-foreground text-sm text-balance">
         I'm currently focused on building solid, accessible, and maintainable
@@ -44,41 +51,54 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         modern web stack, but I'm always up for learning whatever's needed to
         solve things properly.
       </p>
-      <div class="mt-3 flex items-center gap-x-2.5">
-        <Button variant="outline" disabled>
-          Resume
+      <div class="mt-2 flex items-center gap-x-4">
+        <Button variant="link" disabled className='has-[>svg]:px-0'>
           <Icon name="lucide:file-text" class="size-4" />
+          Resume
         </Button>
         <Link
           href="https://github.com/cristhian-fs"
-          class={buttonVariants({ variant: 'ghost' })}
+          class={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'has-[>svg]:px-0')}
           external
         >
-          <span class="sr-only">Github</span>
           <Icon name="lucide:github" class="size-4" />
+          <span class="">Github</span>
         </Link>
         <Link
           href="mailto:contato@cristhianf.dev"
-          class={buttonVariants({ variant: 'ghost' })}
+          class={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'has-[>svg]:px-0')}
           external
         >
-          <span class="sr-only">Mail</span>
           <Icon name="lucide:mail" class="size-4" />
+          <span class="">Mail</span>
         </Link>
         <Link
-          href="linkeding.com/in/cristhian-fs"
-          class={buttonVariants({ variant: 'ghost' })}
+          href="https://linkedin.com/in/cristhian-fs"
+          class={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'has-[>svg]:px-0')}
           external
         >
-          <span class="sr-only">Linkedin</span>
           <Icon name="lucide:linkedin" class="size-4" />
+          <span class="">Linkedin</span>
         </Link>
       </div>
+      <Line 
+        direction="horizontal"
+        class="absolute bottom-0 left-1/2"
+      />
     </div>
-    <Separator className="my-10"/>
-    <div class="flex flex-col gap-y-2.5">
-      <h3 class="text-base font-medium">Techs that I use</h3>
-      <div class="flex flex-wrap items-center justify-start gap-2 max-w-lg">
+    <div class="flex flex-col gap-y-2.5 mt-16 relative">
+      <div class="relative px-8 p-4 md:p-4 md:px-4">
+        <Line 
+          direction="horizontal"
+          class="absolute top-0 left-1/2"
+        />
+        <h3 class="font-medium text-muted-foreground text-sm">Stack</h3>
+        <Line 
+          direction="horizontal"
+          class="absolute bottom-0 left-1/2"
+        />
+      </div>
+      <div class="flex flex-wrap items-center justify-start gap-2 max-w-lg px-8 py-4 md:p-4">
         {
           TECHSTACK.map((tech) =>
             tech.href ? (
@@ -99,9 +119,21 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </div>
     </div>
   </section>
-  <section class="mt-16 flex flex-col gap-y-4">
-    <h2 class="font-medium">Projects</h2>
-    <ul class="flex flex-col gap-4">
+  <section class="mt-16 flex flex-col">
+    <div class="relative px-8 p-4 md:p-4 md:px-4">
+      <Line 
+          direction="horizontal"
+          class="absolute top-0 left-1/2"
+        />
+        <Link href="/projects">
+          <h2 class="font-medium text-muted-foreground text-sm">Projects ({allProjects.length})</h2>
+        </Link>
+        <Line 
+          direction="horizontal"
+          class="absolute bottom-0 left-1/2"
+        />
+    </div>
+    <ul class="flex flex-col px-4 md:px-0">
       {
         projects.map((project) => (
           <li>
@@ -110,21 +142,22 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         ))
       }
     </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/projects"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all projects
-        <span class="ml-1.5 transition-transform group-hover:translate-x-1">
-          &rarr;
-        </span>
-      </Link>
-    </div>
   </section>
-  <section class="mt-16 flex flex-col gap-y-4">
-    <h2 class="font-medium">Craft</h2>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <section class="mt-16 flex flex-col">
+    <div class="relative px-8 p-4 md:p-4 md:px-4">
+      <Line 
+          direction="horizontal"
+          class="absolute top-0 left-1/2"
+        />
+        <Link href="/craft">
+          <h2 class="font-medium text-muted-foreground text-sm">Craft</h2>
+        </Link>
+        <Line 
+          direction="horizontal"
+          class="absolute bottom-0 left-1/2"
+        />
+    </div>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 px-8 md:px-4">
       {
         crafts.map((craft) => (
           <li>
@@ -133,21 +166,22 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         ))
       }
     </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/craft"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all
-        <span class="ml-1.5 transition-transform group-hover:translate-x-1">
-          &rarr;
-        </span>
-      </Link>
-    </div>
   </section>
-  <section class="mt-16 flex flex-col gap-y-4">
-    <h2 class="text-xl font-medium">Latest posts</h2>
-    <ul class="flex flex-col gap-y-4">
+  <section class="mt-16 flex flex-col">
+    <div class="relative px-8 p-4 md:p-4 md:px-4">
+      <Line 
+        direction="horizontal"
+        class="absolute top-0 left-1/2"
+      />
+      <Link href="/blog">
+        <h2 class="font-medium text-muted-foreground text-sm">Blog</h2>
+      </Link>
+      <Line 
+        direction="horizontal"
+        class="absolute bottom-0 left-1/2"
+      />
+    </div>
+    <ul class="flex flex-col px-4 md:px-0">
       {
         blog.map((post) => (
           <li>
@@ -156,16 +190,5 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         ))
       }
     </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/blog"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all posts <span
-          class="ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span
-        >
-      </Link>
-    </div>
   </section>
 </Layout>

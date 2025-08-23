@@ -1,6 +1,7 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import CraftCard from '@/components/CraftCard.astro'
+import Line from '@/components/line.astro'
 import PageHead from '@/components/PageHead.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import Layout from '@/layouts/Layout.astro'
@@ -11,18 +12,36 @@ const craftsByYear = groupCraftByYear(crafts)
 const years = Object.keys(craftsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
-<Layout class="max-w-3xl">
+<Layout class="max-w-2xl pt-16">
   <PageHead slot="head" title="Craft" />
-  <Breadcrumbs
-    items={[
-      { label: 'Craft', href: '/craft', icon: 'lucide:archive' },
-    ]}
+  <Line 
+    direction="vertical"
+    class='fixed top-0 right-4 md:right-[calc(50%-42rem/2)]'
   />
-  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+  <Line 
+    direction="vertical"
+    class='fixed top-0 left-4 md:left-[calc(50%-42rem/2)]'
+  />
+  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-6 px-8 md:px-4">
+    <Breadcrumbs
+      items={[
+        { label: 'Craft', href: '/craft', icon: 'lucide:archive' },
+      ]}
+    />
     {
       years.map((year) => (
-        <section class="flex flex-col gap-y-4">
-          <div class="font-medium">{year}</div>
+        <section class="flex flex-col gap-y-4 mb-16">
+          <div class="relative py-4 md:p-4">
+            <Line 
+              direction="horizontal"
+              class="absolute top-0 left-1/2"
+            />
+              <div class="font-medium">{year}</div>
+            <Line 
+              direction="horizontal"
+              class="absolute bottom-0 left-1/2"
+            />
+          </div>
           <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {craftsByYear[year].map((craft) => (
               <li>
